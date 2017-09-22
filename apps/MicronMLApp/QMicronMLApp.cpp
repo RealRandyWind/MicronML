@@ -24,14 +24,30 @@ QMicronMLApp::~QMicronMLApp()
 void QMicronMLApp::CreateActions()
 {
 	ImportDataAction = new QAction(tr("&Import Data"), this);
-	ImportDataAction->setShortcut(QKeySequence::Open);
+	ImportDataAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_D));
 	connect(ImportDataAction, SIGNAL(triggered()), this, SLOT(ImportData()));
+
+	ImportResultAction = new QAction(tr("&Import Result"), this);
+	ImportResultAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_R));
+	connect(ImportResultAction, SIGNAL(triggered()), this, SLOT(ImportResult()));
+
+	ImportProcedureAction = new QAction(tr("&Import Procedure"), this);
+	ImportProcedureAction->setShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_P));
+	connect(ImportProcedureAction, SIGNAL(triggered()), this, SLOT(ImportProcedure()));
 }
 
 void QMicronMLApp::CreateMenus()
 {
+	DataMenu = menuBar()->addMenu(tr("&File"));
+
 	DataMenu = menuBar()->addMenu(tr("&Data"));
 	DataMenu->addAction(ImportDataAction);
+
+	ResultMenu = menuBar()->addMenu(tr("&Result"));
+	ResultMenu->addAction(ImportResultAction);
+
+	ProcedureMenu = menuBar()->addMenu(tr("&Procedure"));
+	ProcedureMenu->addAction(ImportProcedureAction);
 }
 
 void QMicronMLApp::ImportData()
@@ -42,6 +58,26 @@ void QMicronMLApp::ImportData()
 	if (FileName.isEmpty()) { MicronML_Throw_Warning(EExceptionCode::NullFile); return; }
 	Parameters.File = rt(FileName);
 	API->ImportData(Parameters, &DataID);
+}
+
+void QMicronMLApp::ImportResult()
+{
+	FResultParameters Parameters;
+	result_id ResultID = MicronML_None;
+	QString FileName = QFileDialog::getOpenFileName(this, "Import Result", QDir::currentPath());
+	if (FileName.isEmpty()) { MicronML_Throw_Warning(EExceptionCode::NullFile); return; }
+	Parameters.File = rt(FileName);
+	API->ImportResult(Parameters, &ResultID);
+}
+
+void QMicronMLApp::ImportProcedure()
+{
+	FProcedureParameters Parameters;
+	procedure_id ProcedureID = MicronML_None;
+	QString FileName = QFileDialog::getOpenFileName(this, "Import Procedure", QDir::currentPath());
+	if (FileName.isEmpty()) { MicronML_Throw_Warning(EExceptionCode::NullFile); return; }
+	Parameters.File = rt(FileName);
+	API->ImportProcedure(Parameters, &ProcedureID);
 }
 
 void QMicronMLApp::OnDataImport(const FDataParameters Parameters, FData* Data, data_id ID)

@@ -22,13 +22,21 @@ namespace MicronMLApp
 		CMicronML* API;
 		QLabel* Canvas;
 		QMenu* DataMenu;
+		QMenu* ResultMenu;
+		QMenu* ProcedureMenu;
+		QMenu* FileMenu;
+
 		QAction* ImportDataAction;
+		QAction* ImportResultAction;
+		QAction* ImportProcedureAction;
 
 		void CreateActions();
 		void CreateMenus();
 
 	public slots:
 		void ImportData();
+		void ImportResult();
+		void ImportProcedure();
 
 	};
 }
