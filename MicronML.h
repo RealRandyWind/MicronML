@@ -1,22 +1,54 @@
-// The following ifdef block is the standard way of creating macros which make exporting 
-// from a DLL simpler. All files within this DLL are compiled with the MICRONML_EXPORTS
-// symbol defined on the command line. This symbol should not be defined on any project
-// that uses this DLL. This way any other project whose source files include this file see 
-// MICRONML_API functions as being imported from a DLL, whereas this DLL sees symbols
-// defined with this macro as being exported.
+#pragma once
+
 #ifdef MICRONML_EXPORTS
 #define MICRONML_API __declspec(dllexport)
 #else
 #define MICRONML_API __declspec(dllimport)
 #endif
 
-// This class is exported from the MicronML.dll
-class MICRONML_API CMicronML {
-public:
-	CMicronML(void);
-	// TODO: add your methods here.
-};
+#include "MicronML_Exceptions.h"
+#include "MicronML_Parameters.h"
+#include "MicronML_Definitions.h"
+#include "MicronML_Events.h"
+#include "ExceptionManager.h"
 
-extern MICRONML_API int nMicronML;
+namespace MicronML
+{
+	class MICRONML_API CMicronML final
+	{
+	public:
+		~CMicronML();
+		static CMicronML* GetInstance();
 
-MICRONML_API int fnMicronML(void);
+		void ImportData(const FDataParameters Parameters, data_id* DataIDPointer);
+		void ImportProcedure(const FProcedureParameters Parameters, procedure_id* ProcedureIDPointer);
+		void ImportResult(const FResultParameters Parameters, result_id *ResultIDPointer);
+
+		void ExtractMicrons(const FExtractMicronParameters Parameters, result_id* ResultsIDPointer);
+		void ClassifyMicrons(const FClassifyMicronParameters Parameters, result_id* ResultsIDPointer);
+		void TraceMicrons(const FTraceMicronParameters Parameters, result_id* ResultsIDPointer);
+		void TrainProcedure(const FTrainParameters Parameters, const FSelection Samples);
+		void ValidateProcedure(const FValidateParameters Parameters, const FSelection Samples, FPerformance* PerformancePointer);
+		void OptimizeProcedure(const FOptimizeParameters Parameters);
+
+		void Sample(const FCursor Cursor);
+		void Micron(const FCursor Cursor);
+
+		void AddDelegate(FOnSampleEvent::FDelegate Delegate, data_id DataID);
+		void AddDelegate(FOnMicronEvent::FDelegate Delegate, result_id ResultID);
+		void AddDelegate(FOnDataImportEvent::FDelegate Delegate);
+		void AddDelegate(FOnDataImportDoneEvent::FDelegate Delegate);
+
+		void AddDelegate(FOnExceptionEvent::FDelegate Delegate);
+		void RemoveDelegate(FOnExceptionEvent::FDelegate Delegate);
+		void UseDefaultExceptionListener();
+	
+	private:
+		CMicronML();
+		static CMicronML* Instance;
+
+	private:
+		FOnDataImportEvent* OnDataImportEvent;
+		FOnDataImportDoneEvent* OnDataImportDoneEvent;
+	};
+}

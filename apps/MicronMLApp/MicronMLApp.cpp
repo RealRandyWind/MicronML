@@ -2,10 +2,15 @@
 //
 
 #include "stdafx.h"
+#include <QtWidgets\QApplication>
+#include "QMicronMLApp.h"
 
+using namespace MicronMLApp;
 
-int main()
+int main(int ArgumentCount, char** Arguments)
 {
-    return 0;
+	QApplication Application(ArgumentCount, Arguments);
+	QMicronMLApp MainWindow;
+	MainWindow.show();
+	return Application.exec();
 }
-

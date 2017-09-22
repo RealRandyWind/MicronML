@@ -5,11 +5,11 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace MicronMLTests
 {		
-	TEST_CLASS(UnitTest1)
+	TEST_CLASS(UnitTestMicronML)
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
+		TEST_METHOD(DisplayResults)
 		{
 			// TODO: Your test code here
 		}

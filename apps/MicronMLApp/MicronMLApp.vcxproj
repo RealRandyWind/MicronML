@@ -72,23 +72,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)bin\$(Platform)</OutDir>
-    <IntDir>bin\$(Platform)</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\</OutDir>
+    <IntDir>bin\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)bin\$(Platform)</OutDir>
-    <IntDir>bin\$(Platform)</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\</OutDir>
+    <IntDir>bin\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)bin\$(Platform)</OutDir>
-    <IntDir>bin\$(Platform)</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\</OutDir>
+    <IntDir>bin\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)bin\$(Platform)</OutDir>
-    <IntDir>bin\$(Platform)</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Platform)\</OutDir>
+    <IntDir>bin\$(Platform)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -96,10 +96,19 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir);deps\$(Platform);deps</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>deps\$(Platform)</AdditionalLibraryDirectories>
     </Link>
+    <PreBuildEvent>
+      <Command>PowerShell.exe -Command Copy-Item $(SolutionDir)deps\$(Platform)\*.dll $(OutDir) -Force -Exclude $(OutDir)*.dll
+PowerShell.exe -Command Copy-Item $(SolutionDir)lib\$(Platform)\*.dll $(OutDir) -Force
+PowerShell.exe -Command Copy-Item $(ProjectDir)deps\$(Platform)\*.dll $(OutDir) -Force
+PowerShell.exe -ExecutionPolicy bypass -File $(ProjectDir)QtMoc.ps1 $(ProjectDir) Q*.h</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -107,10 +116,24 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir);deps\$(Platform);deps</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>deps\$(Platform)</AdditionalLibraryDirectories>
     </Link>
+    <PreBuildEvent>
+      <Command>PowerShell.exe -Command Copy-Item $(SolutionDir)deps\$(Platform)\*.dll $(OutDir) -Force -Exclude $(OutDir)*.dll
+PowerShell.exe -Command Copy-Item $(SolutionDir)lib\$(Platform)\*.dll $(OutDir) -Force
+PowerShell.exe -Command Copy-Item $(ProjectDir)deps\$(Platform)\*.dll $(OutDir) -Force</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Command>PowerShell.exe -Command Copy-Item $(SolutionDir)deps\$(Platform)\*.dll $(OutDir) -Force -Exclude $(OutDir)*.dll
+PowerShell.exe -Command Copy-Item $(SolutionDir)lib\$(Platform)\*.dll $(OutDir) -Force
+PowerShell.exe -Command Copy-Item $(ProjectDir)deps\$(Platform)\*.dll $(OutDir) -Force
+PowerShell.exe -ExecutionPolicy bypass -File $(ProjectDir)QtMoc.ps1 $(ProjectDir) Q*.h</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -120,12 +143,21 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir);deps\$(Platform);deps</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>deps\$(Platform)</AdditionalLibraryDirectories>
     </Link>
+    <PreBuildEvent>
+      <Command>PowerShell.exe -Command Copy-Item $(SolutionDir)deps\$(Platform)\*.dll $(OutDir) -Force -Exclude $(OutDir)*.dll
+PowerShell.exe -Command Copy-Item $(SolutionDir)lib\$(Platform)\*.dll $(OutDir) -Force
+PowerShell.exe -Command Copy-Item $(ProjectDir)deps\$(Platform)\*.dll $(OutDir) -Force
+PowerShell.exe -ExecutionPolicy bypass -File $(ProjectDir)QtMoc.ps1 $(ProjectDir) Q*.h</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -135,28 +167,45 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir);deps\$(Platform);deps</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>deps\$(Platform)</AdditionalLibraryDirectories>
     </Link>
+    <PreBuildEvent>
+      <Command>PowerShell.exe -Command Copy-Item $(SolutionDir)deps\$(Platform)\*.dll $(OutDir) -Force -Exclude $(OutDir)*.dll
+PowerShell.exe -Command Copy-Item $(SolutionDir)lib\$(Platform)\*.dll $(OutDir) -Force
+PowerShell.exe -Command Copy-Item $(ProjectDir)deps\$(Platform)\*.dll $(OutDir) -Force
+PowerShell.exe -ExecutionPolicy bypass -File $(ProjectDir)QtMoc.ps1 $(ProjectDir) Q*.h</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MicronMLApp_Definitions.h" />
+    <ClInclude Include="QMicronMLApp.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MicronMLApp.cpp" />
+    <ClCompile Include="QMicronMLApp.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MicronML.vcxproj">
+      <Project>{dc7fd950-c950-42f4-907e-17fe9babdfa1}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
