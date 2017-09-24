@@ -29,7 +29,7 @@ namespace MicronML
 		/* FDataPoint Min, Max, Mean, SD, Norm; */
 		real_t Time;
 		size_t OriginX, OriginY;
-		size_t Width, Height, Channels;
+		size_t Width, Height, Channels, BitsPerChannel;
 		union
 		{
 			FDataPoint* Points;
@@ -89,9 +89,9 @@ namespace MicronML
 	typedef struct FMicronShape
 	{
 		shape_id ID;
-		FCursor Cursor;
 		size_t Size;
 		FMicronPoint* Sequence;
+		FCursor Cursor;
 	} FMicronShape;
 
 	typedef struct FMicronClass

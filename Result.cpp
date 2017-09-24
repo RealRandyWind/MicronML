@@ -76,7 +76,7 @@ FMicron* CResult::Micron(micron_id MicronID, FCursor* CursorPointer)
 	FMicron* Micron;
 
 	if (ID == MicronML_None) { MicronML_Throw_Warning(EExceptionCode::NoneResult); return nullptr; }
-	if (Raw->Size >= MicronID) { MicronML_Throw_Error(EExceptionCode::InvalidMicronID); return nullptr; }
+	if (MicronID >= Raw->Size) { MicronML_Throw_Error(EExceptionCode::InvalidMicronID); return nullptr; }
 
 	Cursor.Micron = { ID, MicronID };
 	Micron = &Raw->List[MicronID];

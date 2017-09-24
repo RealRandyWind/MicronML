@@ -2,13 +2,21 @@
 #include "QMicronMLApp.h"
 #include "QMicronMLApp.moc"
 
+#define MicronMLApp_Title "MicronML"
+#define MicronMLApp_WindowSize QSize(1080, 720)
+#define MicronMLApp_ImageFormat QImage::Format_RGBA8888
+
 using namespace MicronMLApp;
 
 QMicronMLApp::QMicronMLApp() :
 	API(CMicronML::GetInstance()),
-	Canvas(new QLabel())
+	Canvas(new QLabel(this)),
+	ImageReader(new QImageReader())
 {
+	resize(MicronMLApp_WindowSize);
+	setWindowTitle(MicronMLApp_Title);
 	setCentralWidget(Canvas);
+	
 	CreateActions();
 	CreateMenus();
 
@@ -19,6 +27,7 @@ QMicronMLApp::QMicronMLApp() :
 
 QMicronMLApp::~QMicronMLApp()
 {
+	delete ImageReader;
 }
 
 void QMicronMLApp::CreateActions()
@@ -38,16 +47,12 @@ void QMicronMLApp::CreateActions()
 
 void QMicronMLApp::CreateMenus()
 {
-	DataMenu = menuBar()->addMenu(tr("&File"));
+	FileMenu = menuBar()->addMenu(tr("&File"));
+	FileMenu->addAction(ImportDataAction);
+	FileMenu->addAction(ImportProcedureAction);
+	FileMenu->addAction(ImportResultAction);
 
-	DataMenu = menuBar()->addMenu(tr("&Data"));
-	DataMenu->addAction(ImportDataAction);
-
-	ResultMenu = menuBar()->addMenu(tr("&Result"));
-	ResultMenu->addAction(ImportResultAction);
-
-	ProcedureMenu = menuBar()->addMenu(tr("&Procedure"));
-	ProcedureMenu->addAction(ImportProcedureAction);
+	SelectMenu = menuBar()->addMenu(tr("&Select"));
 }
 
 void QMicronMLApp::ImportData()
@@ -83,36 +88,48 @@ void QMicronMLApp::ImportProcedure()
 void QMicronMLApp::OnDataImport(const FDataParameters Parameters, FData* Data, data_id ID)
 {
 	if (!Data) { MicronML_Throw_Warning(EExceptionCode::NullData); }
-	QImageReader* ImageReader = new QImageReader(Parameters.File);
+	ImageReader->setFileName(Parameters.File);
 
 	Data->Size = (ImageReader->imageCount() ? ImageReader->imageCount() : MicronML_One);
 	Data->Samples = new FSample[Data->Size];
 	if (!Data->Samples) { MicronML_Throw_Warning(EExceptionCode::FaildToAllocateSamples); return; }
-
 	for (sample_id SampleID = MicronML_First; SampleID < Data->Size; ++SampleID)
 	{
 		if (!ImageReader->canRead()) { MicronML_Throw_Warning(EExceptionCode::FaildToImportFile); return; }
 		QImage Image = ImageReader->read();
-		Image.convertToFormat(QImage::Format_RGBA8888);
-
-		Data->Samples[SampleID].Height = Image.height();
-		Data->Samples[SampleID].Width = Image.width();
-		Data->Samples[SampleID].Channels = MicronML_One;
-		Data->Samples[SampleID].Pointer = Image.bits();
-		Data->Samples[SampleID].Time = static_cast<real_t>(SampleID);
-		Data->Samples[SampleID].OriginX = MicronML_First;
-		Data->Samples[SampleID].OriginY = MicronML_First;
+		Image.convertToFormat(MicronMLApp_ImageFormat);
+		
+		FSample& Sample = Data->Samples[SampleID];
+		Sample.Height = Image.height();
+		Sample.Width = Image.width();
+		Sample.Channels = MicronML_One;
+		/*
+		raw_t* Pointer = Image.bits();
+		Sample.Pointer = new raw_t[Image.byteCount()];
+		for (size_t PointID = MicronML_First; PointID < Image.byteCount(); ++PointID)
+		{
+			Sample.Pointer[PointID] = Pointer[PointID];
+		}
+		*/
+		Sample.Pointer = Image.bits(); /* Find way to not free image data */
+		Sample.Time = static_cast<real_t>(SampleID);
+		Sample.OriginX = MicronML_First;
+		Sample.OriginY = MicronML_First;
 	}
 
-	delete ImageReader;
+	API->AddListener(FOnSampleEvent, QMicronMLApp, this, OnSample, ID);
 };
 
 void QMicronMLApp::OnDataImportDone(const FDataParameters Parameters, const FData Data, data_id ID)
 {
 	MicronML_Throw_Success(EExceptionCode::DataImport);
+	/* Show first Sample, this will fire OnSample Event */
+	API->Sample({ ID, 0 });
 };
 
 void QMicronMLApp::OnSample(FSample* Sample, FCursor Cursor)
 {
-
+	QImage Image(Sample->Pointer, Sample->Width, Sample->Height, MicronMLApp_ImageFormat);
+	Canvas->setPixmap(QPixmap::fromImage(Image));
+	resize(Image.size());
 };

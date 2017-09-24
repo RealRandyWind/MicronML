@@ -37,7 +37,7 @@ void CExceptionManager::Catch(const FException Exception)
 {
 	printf_s(MicronML_Exception_Message,
 		Exception.Type, Exception.Code,
-		__FILE__, __LINE__,
+		Exception.File, Exception.Line,
 		Exception.FunctionSignature, __FUNCDNAME__
 	);
 	if (Exception.Type == EExceptionType::Error)

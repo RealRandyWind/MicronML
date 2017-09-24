@@ -21,20 +21,22 @@
 #define MicronML_OneF 1.0f
 #define MicronML_ZeroF 0.0f
 #define MicronML_NegOneF -1.0f
+#define MicronML_Empty ""
 
 #define MicronML_BaseBin 2
-#define MicronML_BaseHex 16
-#define MicronML_BaseDec 10
 #define MicronML_BaseTer 3
 #define MicronML_BaseOct 8
+#define MicronML_BaseDec 10
+#define MicronML_BaseHex 16
 
+#define MicronML_ByteSize 8
 #define MicronML_RawSize (sizeof(block_t) / sizeof(raw_t))
 #define MicronML_RealSize (sizeof(block_t) / sizeof(real_t))
 
 namespace MicronML
 {
 	typedef uint8_t raw_t;
-	typedef uint64_t block_t;
+	typedef uint32_t block_t;
 
 	typedef float real_t;
 	typedef bool bool_t;

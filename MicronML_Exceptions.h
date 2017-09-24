@@ -74,6 +74,8 @@ namespace MicronML
 		EExceptionType Type;
 		EExceptionCode Code;
 		const string_t FunctionSignature;
+		const string_t File;
+		size_t Line;
 		pointer_t OtherPointer;
 	} FException;
 }

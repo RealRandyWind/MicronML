@@ -20,11 +20,11 @@ namespace MicronMLApp
 
 	private:
 		CMicronML* API;
+		QImageReader* ImageReader;
+
 		QLabel* Canvas;
-		QMenu* DataMenu;
-		QMenu* ResultMenu;
-		QMenu* ProcedureMenu;
 		QMenu* FileMenu;
+		QMenu* SelectMenu;
 
 		QAction* ImportDataAction;
 		QAction* ImportResultAction;

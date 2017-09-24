@@ -110,7 +110,7 @@ void CPSimpleConvolution::Apply(FDomain Domain, const FSample Sample, FFeature* 
 	Output.Size = Domain.Size;
 
 	/* Convert data domain as output charge of input layer */
-	for (ValueID = MicronML_First; ValueID < Domain.Size; ValueID += 2)
+	for (ValueID = MicronML_First; ValueID < Domain.Size; ValueID++)
 	{
 		Point = Sample.Points[Domain.Indices[ValueID]];
 		Output.Values[ValueID] = Point.Block;

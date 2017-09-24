@@ -4,7 +4,7 @@
 #include "MicronML_Exceptions.h"
 #include "MicronML_Events.h"
 
-#define MicronML_Throw_Internal(Type, Code, OtherPointer) Throw({ Type, Code, __FUNCSIG__, OtherPointer })
+#define MicronML_Throw_Internal(Type, Code, OtherPointer) Throw({ Type, Code, __FUNCSIG__, __FILE__, static_cast<size_t>(__LINE__), OtherPointer })
 #define MicronML_Throw(Type, Code, OtherPointer) MicronML::CExceptionManager::MicronML_Throw_Internal(Type, Code, OtherPointer)
 
 #define MicronML_Throw_Warning(Code) MicronML_Throw(MicronML::EExceptionType::Warning, Code, nullptr)

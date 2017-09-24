@@ -18,7 +18,14 @@ CData::CData(FDataParameters Parameters)
 
 CData::~CData()
 {
-	if (Raw->Samples) { delete[] Raw->Samples; }
+	if (Raw->Samples)
+	{
+		for (size_t Index = MicronML_First; Index < Raw->Size; ++Index)
+		{
+			if (Raw->Samples[Index].Pointer) { delete[] Raw->Samples[Index].Pointer; }
+		}
+		delete[] Raw->Samples;
+	}
 	delete Raw;
 	delete OnSampleEvent;
 }
@@ -80,7 +87,7 @@ FSample* CData::Sample(sample_id SampleID, FCursor* CursorPointer)
 	FSample* Sample;
 
 	if (ID == MicronML_None) { MicronML_Throw_Warning(EExceptionCode::NoneData); return nullptr; }
-	if (Raw->Size >= SampleID) { MicronML_Throw_Error(EExceptionCode::InvalidSampleID); }
+	if (SampleID >= Raw->Size) { MicronML_Throw_Error(EExceptionCode::InvalidSampleID); return nullptr; }
 
 	Cursor.Sample = { ID, SampleID };
 	Sample = &Raw->Samples[SampleID];
