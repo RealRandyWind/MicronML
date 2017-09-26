@@ -1,18 +1,12 @@
 #pragma once
 
-#ifdef MICRONML_EXPORTS
-#define MICRONML_API __declspec(dllexport)
-#else
-#define MICRONML_API __declspec(dllimport)
-#endif
-
 #include "MicronML_Types.h"
 
 namespace MicronML
 {
 	enum class EExceptionType : enum_t
 	{
-		Unknown,
+		Unknown = MicronML_Unknown,
 		Warning,
 		Error,
 		Success,
@@ -24,7 +18,9 @@ namespace MicronML
 
 	enum class EExceptionCode : enum_t
 	{
-		Unknown,
+		Unknown = MicronML_Unknown,
+
+		NullPointer = MicronML_NullCode,
 		NullSingeltonInstance,
 		NullDataRaw,
 		NullResultRaw,
@@ -34,15 +30,16 @@ namespace MicronML
 		NullResult,
 		NullReturn,
 		NullFile,
-		NoneData,
-		NoneResult,
-		NoneProcedure,
 		NullIDPointer,
 		NullDataIDPointer,
 		NullProcedureIDPointer,
 		NullResultIDPointer,
-		NullPointer,
-		FaildOpenFile,
+
+		NoneData = MicronML_NoneCode,
+		NoneResult,
+		NoneProcedure,
+
+		FaildOpenFile = MicronML_FaildCode,
 		FaildToImportFile,
 		FaildToExportFile,
 		FaildToAllocateSamples,
@@ -56,16 +53,20 @@ namespace MicronML
 		FaildToAllocateFeatures,
 		FaildTermination,
 		FaildInitialization,
-		FunctionNotSuppored,
-		FunctionDeprecated,
-		InvalidSampleID,
+		FaildToReadSampleSize,
+
+		InvalidSampleID = MicronML_InvalidCode,
 		InvalidMicronID,
 		InvalidDataID,
 		InvalidResultID,
 		InvalidProcedureID,
-		DataImport,
+
+		DataImport = MicronML_ActionCode,
 		ResultImport,
 		ProcedureImport,
+
+		FunctionNotSuppored = MicronML_SpecialCode,
+		FunctionDeprecated,
 		_EnumSize
 	};
 

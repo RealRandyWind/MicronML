@@ -10,10 +10,19 @@
 #define MicronML_Macro_Va_Size(...) MicronML_Macro_Expand(MicronML_Macro_Size(__VA_ARGS__, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0))
 #define MicronML_Macro_Va_Select(Name, ...) MicronML_Macro_Expand(MicronML_Macro_Select(Name, MicronML_Macro_Va_Size(__VA_ARGS__))(__VA_ARGS__))
 
+#define MicronML_NullCode 1
+#define MicronML_NoneCode 1001
+#define MicronML_FaildCode 2001
+#define MicronML_InvalidCode 3001
+#define MicronML_ActionCode 4001
+#define MicronML_SpecialCode 5001
+#define MicronML_OtherCode 6001
+
 #define MicronML_None 0
 #define MicronML_Null nullptr
 #define MicronML_Default 0
 #define MicronML_Success 0
+#define MicronML_Unknown 0
 #define MicronML_One 1
 #define MicronML_First 0
 #define MicronML_Zero 0
@@ -52,7 +61,7 @@ namespace MicronML
 	typedef size_t class_id;
 	typedef size_t shape_id;
 
-	typedef uint8_t enum_t;
+	typedef uint16_t enum_t;
 
 	enum class EProcedureType : enum_t
 	{

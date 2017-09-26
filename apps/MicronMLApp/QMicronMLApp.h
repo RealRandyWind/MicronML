@@ -18,6 +18,8 @@ namespace MicronMLApp
 		void OnDataImportDone(const FDataParameters Parameters, const FData Data, data_id ID);
 		void OnSample(FSample* Sample, FCursor Cursor);
 
+		void OnMicron(FMicron* Micron, FCursor Cursor);
+
 	private:
 		CMicronML* API;
 		QImageReader* ImageReader;
@@ -32,6 +34,8 @@ namespace MicronMLApp
 
 		void CreateActions();
 		void CreateMenus();
+
+		inline raw_t* CopyDataPoints(QImage& Image);
 
 	public slots:
 		void ImportData();

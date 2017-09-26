@@ -183,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ExceptionManager.h" />
+    <ClInclude Include="IOManager.h" />
     <ClInclude Include="ManagerInitializer.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="MicronML_Definitions.h" />
@@ -208,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ExceptionManager.cpp" />
+    <ClCompile Include="IOManager.cpp" />
     <ClCompile Include="PArticleSolution.cpp" />
     <ClCompile Include="PCurrentFix.cpp" />
     <ClCompile Include="PEdgeProfile.cpp" />
