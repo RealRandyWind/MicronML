@@ -35,9 +35,8 @@ namespace MicronML
 	enum class EShape : enum_t
 	{
 		Unknown = MicronML_Unknown,
-		Skeleton,
-		Path,
-		Cloud,
+		Micron,
+		Compound,
 		_EnumSize
 	};
 
