@@ -13,7 +13,8 @@ namespace MicronML {
 		static void Drop(result_id ResultID);
 		virtual result_id GetID() final;
 		virtual FResult* GetRaw() final;
-		virtual FMicron* Micron(micron_id MicronID, FCursor* CursorPointer);
+		virtual FMicron* GetMicron(micron_id MicronID, FCursor* CursorPointer);
+		virtual FCompound* GetCompound(compound_id CompoundID, FCursor* CursorPointer);
 
 	private:
 		CResult(FResultParameters Parameters);
@@ -28,6 +29,7 @@ namespace MicronML {
 
 	public:
 		FOnMicronEvent* OnMicronEvent;
+		FOnCounpundEvent* OnCompoundEvent;
 	};
 }
 

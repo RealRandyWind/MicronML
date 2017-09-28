@@ -13,7 +13,7 @@ namespace MicronML {
 		static void Drop(data_id DataID);
 		virtual data_id GetID() final;
 		virtual FData* GetRaw() final;
-		virtual FSample* Sample(sample_id SampleID, FCursor* CursorPointer);
+		virtual FSample* GetSample(sample_id SampleID, FCursor* CursorPointer);
 
 	private:
 		CData(FDataParameters Parameters);

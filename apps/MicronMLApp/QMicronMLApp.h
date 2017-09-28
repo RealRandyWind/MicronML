@@ -26,6 +26,7 @@ namespace MicronMLApp
 
 		QLabel* Canvas;
 		QMenu* FileMenu;
+		QMenu* ProjectMenu;
 		QMenu* SelectMenu;
 
 		QAction* ImportDataAction;

@@ -3,6 +3,12 @@
 #include "QMicronMLApp.moc"
 
 #define MicronMLApp_Title tr("MicronML")
+#define MicronMLApp_ImportDataTitle tr("&Import Data")
+#define MicronMLApp_ImportResultTitle tr("&Import Data")
+#define MicronMLApp_ImportProcedureTitle tr("&Import Data")
+#define MicronMLApp_FileTitle tr("&File")
+#define MicronMLApp_SelectTitle tr("&Select")
+#define MicronMLApp_ProjectTitle tr("&Project")
 #define MicronMLApp_WindowSize QSize(1080, 720)
 #define MicronMLApp_ImageFormat QImage::Format_RGBA8888
 
@@ -32,34 +38,35 @@ QMicronMLApp::~QMicronMLApp()
 
 void QMicronMLApp::CreateActions()
 {
-	ImportDataAction = new QAction(tr("&Import Data"), this);
+	ImportDataAction = new QAction(MicronMLApp_ImportDataTitle, this);
 	ImportDataAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_D));
 	connect(ImportDataAction, SIGNAL(triggered()), this, SLOT(ImportData()));
 
-	ImportResultAction = new QAction(tr("&Import Result"), this);
+	ImportResultAction = new QAction(MicronMLApp_ImportResultTitle, this);
 	ImportResultAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
 	connect(ImportResultAction, SIGNAL(triggered()), this, SLOT(ImportResult()));
 
-	ImportProcedureAction = new QAction(tr("&Import Procedure"), this);
+	ImportProcedureAction = new QAction(MicronMLApp_ImportProcedureTitle, this);
 	ImportProcedureAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_P));
 	connect(ImportProcedureAction, SIGNAL(triggered()), this, SLOT(ImportProcedure()));
 }
 
 void QMicronMLApp::CreateMenus()
 {
-	FileMenu = menuBar()->addMenu(tr("&File"));
+	FileMenu = menuBar()->addMenu(MicronMLApp_FileTitle);
 	FileMenu->addAction(ImportDataAction);
 	FileMenu->addAction(ImportProcedureAction);
 	FileMenu->addAction(ImportResultAction);
 
-	SelectMenu = menuBar()->addMenu(tr("&Select"));
+	ProjectMenu = menuBar()->addMenu(MicronMLApp_ProjectTitle);
+	SelectMenu = menuBar()->addMenu(MicronMLApp_SelectTitle);
 }
 
 void QMicronMLApp::ImportData()
 {
 	FDataParameters Parameters;
 	data_id DataID = MicronML_None;
-	QString FileName = QFileDialog::getOpenFileName(this, tr("Import Data"), QDir::currentPath());
+	QString FileName = QFileDialog::getOpenFileName(this, MicronMLApp_ImportDataTitle, QDir::currentPath());
 	if (FileName.isEmpty()) { MicronML_Throw_Warning(EExceptionCode::NullFile); return; }
 	Parameters.File = rt(FileName);
 	API->ImportData(Parameters, &DataID);
@@ -69,7 +76,7 @@ void QMicronMLApp::ImportResult()
 {
 	FResultParameters Parameters;
 	result_id ResultID = MicronML_None;
-	QString FileName = QFileDialog::getOpenFileName(this, tr("Import Result"), QDir::currentPath());
+	QString FileName = QFileDialog::getOpenFileName(this, MicronMLApp_ImportResultTitle, QDir::currentPath());
 	if (FileName.isEmpty()) { MicronML_Throw_Warning(EExceptionCode::NullFile); return; }
 	Parameters.File = rt(FileName);
 	API->ImportResult(Parameters, &ResultID);
@@ -79,7 +86,7 @@ void QMicronMLApp::ImportProcedure()
 {
 	FProcedureParameters Parameters;
 	procedure_id ProcedureID = MicronML_None;
-	QString FileName = QFileDialog::getOpenFileName(this, tr("Import Procedure"), QDir::currentPath());
+	QString FileName = QFileDialog::getOpenFileName(this, MicronMLApp_ImportProcedureTitle, QDir::currentPath());
 	if (FileName.isEmpty()) { MicronML_Throw_Warning(EExceptionCode::NullFile); return; }
 	Parameters.File = rt(FileName);
 	API->ImportProcedure(Parameters, &ProcedureID);
@@ -102,10 +109,11 @@ void QMicronMLApp::OnDataImport(const FDataParameters Parameters, FData* Data, d
 		Sample.Height = Image.height();
 		Sample.Width = Image.width();
 		Sample.Channels = MicronML_One;
+		Sample.ChannelMap = new size_t[Sample.Channels];
+		Sample.ChannelMap[MicronML_First] = (sizeof(FDataPoint) * MicronML_ByteSize);
 		Sample.Pointer = CopyDataPoints(Image);
 		Sample.Time = static_cast<real_t>(SampleID);
-		Sample.OriginX = MicronML_First;
-		Sample.OriginY = MicronML_First;
+		Sample.Origin = { MicronML_ZeroF, MicronML_ZeroF };
 	}
 
 	API->AddListener(FOnSampleEvent, QMicronMLApp, this, OnSample, ID);
@@ -115,12 +123,12 @@ void QMicronMLApp::OnDataImportDone(const FDataParameters Parameters, const FDat
 {
 	MicronML_Throw_Success(EExceptionCode::DataImport);
 	/* Show first Sample, this will fire OnSample Event */
-	API->Sample({ ID, 0 });
+	API->Sample({ECursor::Sample, ID, MicronML_First });
 };
 
 void QMicronMLApp::OnSample(FSample* Sample, FCursor Cursor)
 {
-	QImage Image(Sample->Pointer, Sample->Width, Sample->Height, MicronMLApp_ImageFormat);
+	QImage Image(Sample->Pointer, static_cast<int>(Sample->Width), static_cast<int>(Sample->Height), MicronMLApp_ImageFormat);
 	Canvas->setPixmap(QPixmap::fromImage(Image));
 	resize(Image.size());
 };

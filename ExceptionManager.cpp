@@ -2,7 +2,7 @@
 #include "ExceptionManager.h"
 
 #define MicronML_Exception_ExitCode (unsigned(Exception.Type) | unsigned(Exception.Code) << 16)
-#define MicronML_Exception_Message "  Exception %u.%u\n    at %s(%i)\n    function '%s'\n    catched by '%s';\n"
+#define MicronML_Exception_Message "  Exception %u.%u\n    line %s(%i)\n    function '%s'\n    catched by '%s';\n"
 
 using namespace MicronML;
 

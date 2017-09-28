@@ -55,11 +55,13 @@ namespace MicronML
 	typedef size_t data_id;
 	typedef size_t procedure_id;
 	typedef size_t result_id;
+	typedef size_t compound_id;
 
 	typedef size_t micron_id;
 	typedef size_t sample_id;
-	typedef size_t class_id;
 	typedef size_t shape_id;
+	typedef size_t class_id;
+	typedef size_t contact_id;
 
 	typedef uint16_t enum_t;
 

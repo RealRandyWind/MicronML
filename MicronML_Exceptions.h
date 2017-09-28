@@ -34,6 +34,7 @@ namespace MicronML
 		NullDataIDPointer,
 		NullProcedureIDPointer,
 		NullResultIDPointer,
+		NullTrace,
 
 		NoneData = MicronML_NoneCode,
 		NoneResult,
@@ -51,6 +52,7 @@ namespace MicronML
 		FaildToAllocateContacts,
 		FaildToAllocateCursors,
 		FaildToAllocateFeatures,
+		FaildToAllocateCompounds,
 		FaildTermination,
 		FaildInitialization,
 		FaildToReadSampleSize,
@@ -60,6 +62,10 @@ namespace MicronML
 		InvalidDataID,
 		InvalidResultID,
 		InvalidProcedureID,
+		InvalidShapeID,
+		InvalidContactID,
+		InvalidClassID,
+		InvalidCompoundID,
 
 		DataImport = MicronML_ActionCode,
 		ResultImport,

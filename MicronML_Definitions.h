@@ -2,6 +2,45 @@
 
 namespace MicronML
 {
+	enum class ECursor : enum_t
+	{
+		Unknown = MicronML_Unknown,
+		Data,
+		Result,
+		Procedure,
+		Sample,
+		Micron,
+		Compound,
+		_EnumSize
+	};
+
+	enum class EContact : enum_t
+	{
+		Unknown = MicronML_Unknown,
+		Micron,
+		Compound,
+		_EnumSize
+	};
+
+	enum class EDomain : enum_t
+	{
+		Unknown = MicronML_Unknown,
+		Sample,
+		Micron,
+		Compound,
+		Index,
+		_EnumSize
+	};
+
+	enum class EShape : enum_t
+	{
+		Unknown = MicronML_Unknown,
+		Skeleton,
+		Path,
+		Cloud,
+		_EnumSize
+	};
+
 	typedef struct FPerformance
 	{
 		real_t Consistency;
@@ -11,6 +50,7 @@ namespace MicronML
 		size_t SimpleOperations;
 		size_t ComplexOperations;
 		size_t FunctionCalls;
+		size_t Threads;
 		size_t N;
 	} FPerformance;
 
@@ -18,7 +58,6 @@ namespace MicronML
 	{
 		union
 		{
-			real_t Real[MicronML_RealSize];
 			raw_t Raw[MicronML_RawSize];
 			block_t Block;
 		};
@@ -26,10 +65,11 @@ namespace MicronML
 
 	typedef struct FSample
 	{
-		/* FDataPoint Min, Max, Mean, SD, Norm; */
-		real_t Time;
-		size_t OriginX, OriginY;
-		size_t Width, Height, Channels, BitsPerChannel;
+		/* FPoint Min, Max, Mean, SD, Norm; */
+		real_t Time, Scale;
+		struct { real_t X, Y; } Origin;
+		size_t Width, Height, Channels;
+		size_t* ChannelMap;
 		union
 		{
 			FDataPoint* Points;
@@ -39,10 +79,12 @@ namespace MicronML
 
 	typedef struct FCursor
 	{
+		ECursor Type;
 		union
 		{
-			struct { data_id DataID; sample_id ID; } Sample;
 			struct { result_id ResultID; micron_id ID; } Micron;
+			struct { result_id ResultID; compound_id ID; } Compound;
+			struct { data_id DataID; sample_id ID; } Sample;
 			struct { data_id ID; } Data;
 			struct { result_id ID; } Result;
 			struct { procedure_id ID; } Procedure;
@@ -64,13 +106,13 @@ namespace MicronML
 
 	typedef struct FDomain
 	{
+		EDomain Type;
 		size_t Size;
 		union
 		{
 			sample_id* SampleIDs;
 			micron_id* MicronIDs;
-			class_id* ClassIDs;
-			shape_id* ShapeIDs;
+			compound_id* CompoundID;
 			size_t* Indices;
 		};
 	} FDomain;
@@ -81,61 +123,79 @@ namespace MicronML
 		FCursor* Cursors;
 	} FSelection;
 
-	typedef struct FMicronPoint
+	typedef struct FPoint
 	{
 		real_t X, Y, Z, Weight;
-	} FMicronPoint;
+	} FPoint;
 
-	typedef struct FMicronShape
+	typedef FPoint FVector;
+
+	typedef struct FShape
 	{
-		shape_id ID;
-		size_t Size;
-		FMicronPoint* Sequence;
+		EShape Type;
+		FVector Right, Up, Forward;
+		FPoint Origin;
 		FCursor Cursor;
-	} FMicronShape;
+		size_t Size;
+		FPoint* Sequence;
+	} FShape;
 
-	typedef struct FMicronClass
+	typedef struct FClass
 	{
 		class_id ID;
 		real_t Score;
-	} FMicronClass;
+	} FClass;
 
-	typedef struct FMicronProfile
+	typedef struct FProfile
 	{
 		size_t Size;
-		FMicronClass* List;
-	} FMicronProfile;
+		FClass* List;
+	} FProfile;
 
-	typedef struct FMicronTrace
+	typedef struct FTrace
 	{
 		size_t Size;
-		FMicronShape* Sequence;
-	} FMicronTrace;
+		FShape* Sequence;
+	} FTrace;
 
-	typedef struct FMicronContact
+	typedef struct FContact
 	{
-		micron_id MicronID;
+		EContact Type;
+		union
+		{
+			micron_id MicronID;
+			compound_id CompoundID;
+		};
 		real_t Point, Weight;
-	} FMicronContact;
+	} FContact;
 
-	typedef struct FMicronFamily
+	typedef struct FFamily
 	{
 		size_t Size;
-		FMicronContact* List;
-	} FMicronFamily;
+		FContact* List;
+	} FFamily;
 
 	typedef struct FMicron
 	{
 		micron_id ID;
-		FMicronProfile Profile;
-		FMicronTrace Trace;
-		FMicronFamily Family;
+		FProfile Profile;
+		FTrace Trace;
+		FFamily Family;
 	} FMicron;
+
+	typedef struct FCompound
+	{
+		compound_id ID;
+		FProfile Profile;
+		FTrace Trace;
+		FFamily Family;
+	} FCompound;
 
 	typedef struct FResult
 	{
 		size_t Size;
-		FMicron* List;
+		FMicron* Microns;
+		FCompound* Compounds;
 		FPerformance Performance;
 	} FResult;
 }

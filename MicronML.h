@@ -27,12 +27,20 @@ namespace MicronML
 		void ExtractMicrons(const FExtractMicronParameters Parameters, result_id* ResultsIDPointer);
 		void ClassifyMicrons(const FClassifyMicronParameters Parameters, result_id* ResultsIDPointer);
 		void TraceMicrons(const FTraceMicronParameters Parameters, result_id* ResultsIDPointer);
+		
+		/*
+		void ExtractCompounds(const FExtractCompoundParameters Parameters, result_id* ResultsIDPointer);
+		void ClassifyCompounds(const FClassifyCompoundParameters, Parameters, result_id* ResultsIDPointer);
+		void TraceCompounds(const FTraceCompoundParameters, Parameters, result_id* ResultsIDPointer);
+		*/
+
 		void TrainProcedure(const FTrainParameters Parameters, const FSelection Samples);
 		void ValidateProcedure(const FValidateParameters Parameters, const FSelection Samples, FPerformance* PerformancePointer);
 		void OptimizeProcedure(const FOptimizeParameters Parameters);
 
 		void Sample(const FCursor Cursor);
 		void Micron(const FCursor Cursor);
+		void Compound(const FCursor Cursor);
 
 		void AddDelegate(FOnSampleEvent::FDelegate Delegate, data_id DataID);
 		void AddDelegate(FOnMicronEvent::FDelegate Delegate, result_id ResultID);
