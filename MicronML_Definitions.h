@@ -85,9 +85,9 @@ namespace MicronML
 			struct { result_id ResultID; micron_id ID; } Micron;
 			struct { result_id ResultID; compound_id ID; } Compound;
 			struct { data_id DataID; sample_id ID; } Sample;
-			struct { data_id ID; } Data;
-			struct { result_id ID; } Result;
-			struct { procedure_id ID; } Procedure;
+			data_id DataID;
+			result_id ResultID;
+			procedure_id ProcedureID;
 		};
 	} FCursor;
 
@@ -112,7 +112,7 @@ namespace MicronML
 		{
 			sample_id* SampleIDs;
 			micron_id* MicronIDs;
-			compound_id* CompoundID;
+			compound_id* CompoundIDs;
 			size_t* Indices;
 		};
 	} FDomain;
@@ -133,8 +133,7 @@ namespace MicronML
 	typedef struct FShape
 	{
 		EShape Type;
-		FVector Right, Up, Forward;
-		FPoint Origin;
+		struct { FVector Right, Up, Forward; FPoint Origin; } Model;
 		FCursor Cursor;
 		size_t Size;
 		FPoint* Sequence;

@@ -12,7 +12,7 @@ CResult::CResult(FResultParameters Parameters)
 	ID = MicronML_None;
 	Raw = new FResult();
 	OnMicronEvent = new FOnMicronEvent();
-	OnCompoundEvent = new FOnCounpundEvent();
+	OnCompoundEvent = new FOnCompoundEvent();
 }
 
 CResult::~CResult()

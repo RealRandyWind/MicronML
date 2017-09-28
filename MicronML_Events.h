@@ -95,7 +95,7 @@ namespace MicronML
 
 	typedef TEvent<FSample*, const FCursor> FOnSampleEvent;
 	typedef TEvent<FMicron*, const FCursor> FOnMicronEvent;
-	typedef TEvent<FCompound*, const FCursor> FOnCounpundEvent;
+	typedef TEvent<FCompound*, const FCursor> FOnCompoundEvent;
 
 	typedef TEvent<const FDataParameters, FData*, data_id> FOnDataImportEvent;
 	typedef TEvent<const FDataParameters, const FData, data_id> FOnDataImportDoneEvent;

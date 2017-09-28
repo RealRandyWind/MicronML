@@ -29,7 +29,7 @@ namespace MicronML {
 
 	public:
 		FOnMicronEvent* OnMicronEvent;
-		FOnCounpundEvent* OnCompoundEvent;
+		FOnCompoundEvent* OnCompoundEvent;
 	};
 }
 

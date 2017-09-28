@@ -126,6 +126,7 @@ void CMicronML::OptimizeProcedure(const FOptimizeParameters Parameters)
 void CMicronML::Sample(const FCursor Cursor)
 {
 	CData* Data;
+
 	Data = CData::Use(Cursor.Sample.DataID);
 	if (!Data) { MicronML_Throw_Warning(EExceptionCode::NullData); return; }
 	Data->GetSample(Cursor.Sample.ID, nullptr);
@@ -134,6 +135,7 @@ void CMicronML::Sample(const FCursor Cursor)
 void CMicronML::Micron(const FCursor Cursor)
 {
 	CResult* Result;
+
 	Result = CResult::Use(Cursor.Micron.ResultID);
 	if (!Result) { MicronML_Throw_Warning(EExceptionCode::NullResult); return; }
 	Result->GetMicron(Cursor.Micron.ID, nullptr);
@@ -142,6 +144,7 @@ void CMicronML::Micron(const FCursor Cursor)
 void  CMicronML::Compound(const FCursor Cursor)
 {
 	CResult* Result;
+
 	Result = CResult::Use(Cursor.Micron.ResultID);
 	if (!Result) { MicronML_Throw_Warning(EExceptionCode::NullResult); return; }
 	Result->GetCompound(Cursor.Micron.ID, nullptr);
@@ -150,6 +153,7 @@ void  CMicronML::Compound(const FCursor Cursor)
 void CMicronML::AddDelegate(FOnSampleEvent::FDelegate Delegate, data_id DataID)
 {
 	CData* Data;
+
 	Data = CData::Use(DataID);
 	if (!Data) { MicronML_Throw_Warning(EExceptionCode::NullData); return; }
 	Data->OnSampleEvent->Add(Delegate);
@@ -158,9 +162,19 @@ void CMicronML::AddDelegate(FOnSampleEvent::FDelegate Delegate, data_id DataID)
 void CMicronML::AddDelegate(FOnMicronEvent::FDelegate Delegate, result_id ResultID)
 {
 	CResult* Result;
+
 	Result = CResult::Use(ResultID);
-	if (!Result) { MicronML_Throw_Warning(EExceptionCode::NullData); return; }
+	if (!Result) { MicronML_Throw_Warning(EExceptionCode::NullResult); return; }
 	Result->OnMicronEvent->Add(Delegate);
+}
+
+void CMicronML::AddDelegate(FOnCompoundEvent::FDelegate Delegate, result_id ResultID)
+{
+	CResult* Result;
+
+	Result = CResult::Use(ResultID);
+	if (!Result) { MicronML_Throw_Warning(EExceptionCode::NullResult); return; }
+	Result->OnCompoundEvent->Add(Delegate);
 }
 
 void CMicronML::AddDelegate(FOnDataImportEvent::FDelegate Delegate)

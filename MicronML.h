@@ -30,8 +30,8 @@ namespace MicronML
 		
 		/*
 		void ExtractCompounds(const FExtractCompoundParameters Parameters, result_id* ResultsIDPointer);
-		void ClassifyCompounds(const FClassifyCompoundParameters, Parameters, result_id* ResultsIDPointer);
-		void TraceCompounds(const FTraceCompoundParameters, Parameters, result_id* ResultsIDPointer);
+		void ClassifyCompounds(const FClassifyCompoundParameters Parameters, result_id* ResultsIDPointer);
+		void TraceCompounds(const FTraceCompoundParameters Parameters, result_id* ResultsIDPointer);
 		*/
 
 		void TrainProcedure(const FTrainParameters Parameters, const FSelection Samples);
@@ -44,6 +44,7 @@ namespace MicronML
 
 		void AddDelegate(FOnSampleEvent::FDelegate Delegate, data_id DataID);
 		void AddDelegate(FOnMicronEvent::FDelegate Delegate, result_id ResultID);
+		void AddDelegate(FOnCompoundEvent::FDelegate Delegate, result_id ResultID);
 		void AddDelegate(FOnDataImportEvent::FDelegate Delegate);
 		void AddDelegate(FOnDataImportDoneEvent::FDelegate Delegate);
 
