@@ -3,14 +3,22 @@
 #include "QMicronMLApp.moc"
 
 #define MicronMLApp_Title tr("MicronML")
-#define MicronMLApp_ImportDataTitle tr("&Import Data")
-#define MicronMLApp_ImportResultTitle tr("&Import Data")
-#define MicronMLApp_ImportProcedureTitle tr("&Import Data")
-#define MicronMLApp_FileTitle tr("&File")
-#define MicronMLApp_SelectTitle tr("&Select")
-#define MicronMLApp_ProjectTitle tr("&Project")
+#define MicronMLApp_ImportDataTitle tr("Import Data")
+#define MicronMLApp_ImportResultTitle tr("Import Data")
+#define MicronMLApp_ImportProcedureTitle tr("Import Data")
+#define MicronMLApp_FileTitle tr("File")
+#define MicronMLApp_SelectTitle tr("Select")
+#define MicronMLApp_ProjectTitle tr("Project")
+#define MicronMLApp_ExitTile tr("Exit")
+#define MicronMLApp_LabelDataTitle tr("Label Data")
+#define MicronMLApp_ExtractMicronsTitle tr("Extract Microns")
+#define MicronMLApp_TrainProcedureTitle tr("Train Procedure")
+#define MicronMLApp_ValidateProcedureTitle tr("Validate Procedure")
 #define MicronMLApp_WindowSize QSize(1080, 720)
 #define MicronMLApp_ImageFormat QImage::Format_RGBA8888
+#define MicronMLApp_Disabled true
+#define MicronMLApp_Visible true
+#define MicronMLApp_NotVisible false
 
 using namespace MicronMLApp;
 
@@ -49,6 +57,39 @@ void QMicronMLApp::CreateActions()
 	ImportProcedureAction = new QAction(MicronMLApp_ImportProcedureTitle, this);
 	ImportProcedureAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));
 	connect(ImportProcedureAction, SIGNAL(triggered()), this, SLOT(ImportProcedure()));
+
+	ExitAction = new QAction(MicronMLApp_ExitTile, this);
+	ExitAction->setShortcut(QKeySequence::Quit);
+	connect(ExitAction, SIGNAL(triggered()), this, SLOT(close()));
+
+	LabelDataAction = new QAction(MicronMLApp_LabelDataTitle, this);
+	LabelDataAction->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_L);
+	connect(LabelDataAction, SIGNAL(triggered()), this, SLOT(LabelData()));
+
+	TrainProcedureAction = new QAction(MicronMLApp_TrainProcedureTitle, this);
+	TrainProcedureAction->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_T);
+	connect(TrainProcedureAction, SIGNAL(triggered()), this, SLOT(TrainProcedure()));
+
+	ValidateProcedureAction = new QAction(MicronMLApp_ValidateProcedureTitle, this);
+	ValidateProcedureAction->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_V);
+	connect(ValidateProcedureAction, SIGNAL(triggered()), this, SLOT(ValidateProcedure()));
+
+	ExtractMicronsAction = new QAction(MicronMLApp_ExtractMicronsTitle, this);
+	ExtractMicronsAction->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_E);
+	connect(ExtractMicronsAction, SIGNAL(triggered()), this, SLOT(ExtractMicrons()));
+
+	DataActionGroup = new QActionGroup(this);
+	DataActionGroup->addAction(LabelDataAction);
+	DataActionGroup->setDisabled(MicronMLApp_Disabled);
+
+	ProcedureActionGroup = new QActionGroup(this);
+	ProcedureActionGroup->addAction(TrainProcedureAction);
+	ProcedureActionGroup->addAction(ValidateProcedureAction);
+	ProcedureActionGroup->setDisabled(MicronMLApp_Disabled);
+
+	DataProcedureActionGroup = new QActionGroup(this);
+	DataProcedureActionGroup->addAction(ExtractMicronsAction);
+	DataProcedureActionGroup->setDisabled(MicronMLApp_Disabled);
 }
 
 void QMicronMLApp::CreateMenus()
@@ -57,9 +98,14 @@ void QMicronMLApp::CreateMenus()
 	FileMenu->addAction(ImportDataAction);
 	FileMenu->addAction(ImportProcedureAction);
 	FileMenu->addAction(ImportResultAction);
+	FileMenu->addSeparator();
+	FileMenu->addAction(ExitAction);
 
 	ProjectMenu = menuBar()->addMenu(MicronMLApp_ProjectTitle);
+	ProjectMenu->setDisabled(MicronMLApp_Disabled);
+
 	SelectMenu = menuBar()->addMenu(MicronMLApp_SelectTitle);
+	SelectMenu->setDisabled(MicronMLApp_Disabled);
 }
 
 void QMicronMLApp::ImportData()
@@ -92,6 +138,30 @@ void QMicronMLApp::ImportProcedure()
 	API->ImportProcedure(Parameters, &ProcedureID);
 }
 
+void QMicronMLApp::LabelData()
+{
+	/* start labling routene */
+	MicronML_Throw_NotSupported();
+}
+
+void QMicronMLApp::TrainProcedure()
+{
+	/* start collecting parameters and train selected procedure */
+	MicronML_Throw_NotSupported();
+}
+
+void QMicronMLApp::ValidateProcedure()
+{
+	/* start collecting parameters and validate selected procedure */
+	MicronML_Throw_NotSupported();
+}
+
+void QMicronMLApp::ExtractMicrons()
+{
+	/* start collecting parameters and extract microns */
+	MicronML_Throw_NotSupported();
+}
+
 void QMicronMLApp::OnDataImport(const FDataParameters Parameters, FData* Data, data_id ID)
 {
 	if (!Data) { MicronML_Throw_Warning(EExceptionCode::NullData); }
@@ -112,7 +182,7 @@ void QMicronMLApp::OnDataImport(const FDataParameters Parameters, FData* Data, d
 		Sample.Channels.Bits[MicronML_First] = (sizeof(FDataPoint) * MicronML_ByteSize);
 		Sample.Pointer = CopyDataPoints(Image);
 		Sample.Time = static_cast<real_t>(SampleID);
-		Sample.Origin = { MicronML_ZeroF, MicronML_ZeroF };
+		Sample.Origin = { MicronML_ZeroF, MicronML_ZeroF, MicronML_ZeroF };
 	}
 
 	API->AddListener(FOnSampleEvent, QMicronMLApp, this, OnSample, ID);
@@ -132,6 +202,11 @@ void QMicronMLApp::OnSample(FSample* Sample, FCursor Cursor)
 	resize(Image.size());
 };
 
+void QMicronMLApp::OnMicron(FMicron* Micron, FCursor Cursor)
+{
+	/* Redraw if data changed, and highlight activated micron */
+	MicronML_Throw_NotSupported();
+}
 
 inline raw_t* QMicronMLApp::CopyDataPoints(QImage& Image)
 {

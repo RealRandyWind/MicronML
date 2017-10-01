@@ -24,14 +24,14 @@ CResult::~CResult()
 			FMicron& Micron = Raw->Microns.List[MicronID];
 			if (Micron.Profile.List) { delete[] Micron.Profile.List; }
 			if (Micron.Family.List) { delete[] Micron.Family.List; }
-			if (Micron.Trace.Sequence)
+			if (Micron.Trace.List)
 			{
 				for (shape_id ShapeID = MicronML_First; ShapeID < Micron.Trace.Size; ++ShapeID)
 				{
-					FShape& Shape = Micron.Trace.Sequence[ShapeID];
+					FShape& Shape = Micron.Trace.List[ShapeID];
 					if (Shape.Sequence) { delete[] Shape.Sequence; }
 				}
-				delete[] Micron.Trace.Sequence;
+				delete[] Micron.Trace.List;
 			}
 		}
 		delete[] Raw->Microns.List;
@@ -44,14 +44,14 @@ CResult::~CResult()
 			FCompound& Compound = Raw->Compounds.List[CompoundID];
 			if (Compound.Profile.List) { delete[] Compound.Profile.List; }
 			if (Compound.Family.List) { delete[] Compound.Family.List; }
-			if (Compound.Trace.Sequence)
+			if (Compound.Trace.List)
 			{
 				for (shape_id ShapeID = MicronML_First; ShapeID < Compound.Trace.Size; ++ShapeID)
 				{
-					FShape& Shape = Compound.Trace.Sequence[ShapeID];
+					FShape& Shape = Compound.Trace.List[ShapeID];
 					if (Shape.Sequence) { delete[] Shape.Sequence; }
 				}
-				delete[] Compound.Trace.Sequence;
+				delete[] Compound.Trace.List;
 			}
 		}
 		delete[] Raw->Compounds.List;

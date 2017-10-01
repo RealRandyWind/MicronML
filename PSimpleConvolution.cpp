@@ -139,7 +139,7 @@ void CPSimpleConvolution::Apply(FDomain Domain, const FSample Sample, FFeature* 
 		}
 	}
 
-	/* Convert output of network to results */
+	/* Convert output of network to feature */
 	for (ValueID = MicronML_First; ValueID < Feature->Size; ValueID++)
 	{
 		Feature->Sequence[ValueID] = Output.Values[ValueID];

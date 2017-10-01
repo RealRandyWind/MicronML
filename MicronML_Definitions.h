@@ -22,19 +22,15 @@ namespace MicronML
 		_EnumSize
 	};
 
-	enum class EDomain : enum_t
-	{
-		Unknown = MicronML_Unknown,
-		Sample,
-		Micron,
-		Compound,
-		Index,
-		_EnumSize
-	};
-
 	enum class EShape : enum_t
 	{
 		Unknown = MicronML_Unknown,
+		/*
+		Cloud,
+		Path,
+		Mesh,
+		Skeleton,
+		*/
 		Micron,
 		Compound,
 		_EnumSize
@@ -106,15 +102,8 @@ namespace MicronML
 
 	typedef struct FDomain
 	{
-		EDomain Type;
 		size_t Size;
-		union
-		{
-			sample_id* SampleIDs;
-			micron_id* MicronIDs;
-			compound_id* CompoundIDs;
-			size_t* Indices;
-		};
+		size_t* Indices;
 	} FDomain;
 
 	typedef struct FSelection
@@ -159,7 +148,7 @@ namespace MicronML
 	{
 		micron_id ID;
 		struct { size_t Size; FClass* List; } Profile;
-		struct { size_t Size; FShape* Sequence; } Trace;
+		struct { size_t Size; FShape* List; } Trace;
 		struct { size_t Size; FContact* List; } Family;
 	} FMicron;
 
@@ -167,7 +156,7 @@ namespace MicronML
 	{
 		compound_id ID;
 		struct { size_t Size; FClass* List; } Profile;
-		struct { size_t Size; FShape* Sequence; } Trace;
+		struct { size_t Size; FShape* List; } Trace;
 		struct { size_t Size; FContact* List; } Family;
 	} FCompound;
 
