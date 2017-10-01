@@ -108,9 +108,8 @@ void QMicronMLApp::OnDataImport(const FDataParameters Parameters, FData* Data, d
 		FSample& Sample = Data->Samples[SampleID];
 		Sample.Dimensions = { static_cast<size_t>(Image.width()),  static_cast<size_t>(Image.height()), MicronML_One };
 		Sample.Size = Sample.Dimensions.Width * Sample.Dimensions.Height * Sample.Dimensions.Depth;
-		Sample.Channels = MicronML_One;
-		Sample.ChannelMap = new size_t[Sample.Channels];
-		Sample.ChannelMap[MicronML_First] = (sizeof(FDataPoint) * MicronML_ByteSize);
+		Sample.Channels = { MicronML_One, new size_t[MicronML_One] };
+		Sample.Channels.Bits[MicronML_First] = (sizeof(FDataPoint) * MicronML_ByteSize);
 		Sample.Pointer = CopyDataPoints(Image);
 		Sample.Time = static_cast<real_t>(SampleID);
 		Sample.Origin = { MicronML_ZeroF, MicronML_ZeroF };

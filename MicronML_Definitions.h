@@ -68,8 +68,8 @@ namespace MicronML
 		real_t Time, Scale;
 		struct { real_t X, Y, Z; } Origin;
 		struct { size_t Width, Height, Depth; } Dimensions;
-		size_t Size, Channels;
-		size_t* ChannelMap;
+		struct { size_t Count; size_t* Bits; } Channels;
+		size_t Size;
 		union
 		{
 			FDataPoint* Points;
@@ -99,7 +99,7 @@ namespace MicronML
 
 	typedef struct FFeature
 	{
-		real_t Min, Max, Mean, SD, Norm;
+		/* real_t Min, Max, Mean, SD, Norm; */
 		size_t Size;
 		real_t* Sequence;
 	} FFeature;
@@ -143,18 +143,6 @@ namespace MicronML
 		real_t Score;
 	} FClass;
 
-	typedef struct FProfile
-	{
-		size_t Size;
-		FClass* List;
-	} FProfile;
-
-	typedef struct FTrace
-	{
-		size_t Size;
-		FShape* Sequence;
-	} FTrace;
-
 	typedef struct FContact
 	{
 		EContact Type;
@@ -167,33 +155,26 @@ namespace MicronML
 		real_t Point, Weight;
 	} FContact;
 
-	typedef struct FFamily
-	{
-		size_t Size;
-		FContact* List;
-	} FFamily;
-
 	typedef struct FMicron
 	{
 		micron_id ID;
-		FProfile Profile;
-		FTrace Trace;
-		FFamily Family;
+		struct { size_t Size; FClass* List; } Profile;
+		struct { size_t Size; FShape* Sequence; } Trace;
+		struct { size_t Size; FContact* List; } Family;
 	} FMicron;
 
 	typedef struct FCompound
 	{
 		compound_id ID;
-		FProfile Profile;
-		FTrace Trace;
-		FFamily Family;
+		struct { size_t Size; FClass* List; } Profile;
+		struct { size_t Size; FShape* Sequence; } Trace;
+		struct { size_t Size; FContact* List; } Family;
 	} FCompound;
 
 	typedef struct FResult
 	{
 		struct { size_t Size; FMicron* List; } Microns;
 		struct { size_t Size; FCompound* List; } Compounds;
-		/* TODO Fix problem of use of multiple procedures */
 		FPerformance Performance;
 	} FResult;
 }

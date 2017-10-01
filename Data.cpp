@@ -24,7 +24,7 @@ CData::~CData()
 		{
 			FSample& Sample = Raw->Samples[PointID];
 			if (Sample.Pointer) { delete[] Sample.Pointer; }
-			if (Sample.ChannelMap) { delete[] Sample.ChannelMap; }
+			if (Sample.Channels.Bits) { delete[] Sample.Channels.Bits; }
 		}
 		delete[] Raw->Samples;
 	}
