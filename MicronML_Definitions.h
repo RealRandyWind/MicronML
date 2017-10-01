@@ -66,8 +66,9 @@ namespace MicronML
 	{
 		/* FPoint Min, Max, Mean, SD, Norm; */
 		real_t Time, Scale;
-		struct { real_t X, Y; } Origin;
-		size_t Width, Height, Channels;
+		struct { real_t X, Y, Z; } Origin;
+		struct { size_t Width, Height, Depth; } Dimensions;
+		size_t Size, Channels;
 		size_t* ChannelMap;
 		union
 		{
@@ -127,12 +128,10 @@ namespace MicronML
 		real_t X, Y, Z, Weight;
 	} FPoint;
 
-	typedef FPoint FVector;
-
 	typedef struct FShape
 	{
 		EShape Type;
-		struct { FVector Right, Up, Forward; FPoint Origin; } Model;
+		struct { FPoint Right, Up, Forward, Origin; } Model;
 		FCursor Cursor;
 		size_t Size;
 		FPoint* Sequence;
@@ -159,6 +158,7 @@ namespace MicronML
 	typedef struct FContact
 	{
 		EContact Type;
+		contact_id ID;
 		union
 		{
 			micron_id MicronID;
@@ -191,9 +191,9 @@ namespace MicronML
 
 	typedef struct FResult
 	{
-		size_t Size;
-		FMicron* Microns;
-		FCompound* Compounds;
+		struct { size_t Size; FMicron* List; } Microns;
+		struct { size_t Size; FCompound* List; } Compounds;
+		/* TODO Fix problem of use of multiple procedures */
 		FPerformance Performance;
 	} FResult;
 }

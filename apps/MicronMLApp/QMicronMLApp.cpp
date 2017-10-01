@@ -39,15 +39,15 @@ QMicronMLApp::~QMicronMLApp()
 void QMicronMLApp::CreateActions()
 {
 	ImportDataAction = new QAction(MicronMLApp_ImportDataTitle, this);
-	ImportDataAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_D));
+	ImportDataAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_D));
 	connect(ImportDataAction, SIGNAL(triggered()), this, SLOT(ImportData()));
 
 	ImportResultAction = new QAction(MicronMLApp_ImportResultTitle, this);
-	ImportResultAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
+	ImportResultAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
 	connect(ImportResultAction, SIGNAL(triggered()), this, SLOT(ImportResult()));
 
 	ImportProcedureAction = new QAction(MicronMLApp_ImportProcedureTitle, this);
-	ImportProcedureAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_P));
+	ImportProcedureAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));
 	connect(ImportProcedureAction, SIGNAL(triggered()), this, SLOT(ImportProcedure()));
 }
 
@@ -106,8 +106,8 @@ void QMicronMLApp::OnDataImport(const FDataParameters Parameters, FData* Data, d
 		QImage Image = ImageReader->read();
 
 		FSample& Sample = Data->Samples[SampleID];
-		Sample.Height = Image.height();
-		Sample.Width = Image.width();
+		Sample.Dimensions = { static_cast<size_t>(Image.width()),  static_cast<size_t>(Image.height()), MicronML_One };
+		Sample.Size = Sample.Dimensions.Width * Sample.Dimensions.Height * Sample.Dimensions.Depth;
 		Sample.Channels = MicronML_One;
 		Sample.ChannelMap = new size_t[Sample.Channels];
 		Sample.ChannelMap[MicronML_First] = (sizeof(FDataPoint) * MicronML_ByteSize);
@@ -128,7 +128,7 @@ void QMicronMLApp::OnDataImportDone(const FDataParameters Parameters, const FDat
 
 void QMicronMLApp::OnSample(FSample* Sample, FCursor Cursor)
 {
-	QImage Image(Sample->Pointer, static_cast<int>(Sample->Width), static_cast<int>(Sample->Height), MicronMLApp_ImageFormat);
+	QImage Image(Sample->Pointer, static_cast<int>(Sample->Dimensions.Width), static_cast<int>(Sample->Dimensions.Height), MicronMLApp_ImageFormat);
 	Canvas->setPixmap(QPixmap::fromImage(Image));
 	resize(Image.size());
 };

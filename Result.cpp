@@ -17,11 +17,11 @@ CResult::CResult(FResultParameters Parameters)
 
 CResult::~CResult()
 {
-	if (Raw->Microns)
+	if (Raw->Microns.List)
 	{
-		for (micron_id MicronID = MicronML_First; MicronID < Raw->Size; ++MicronID)
+		for (micron_id MicronID = MicronML_First; MicronID < Raw->Microns.Size; ++MicronID)
 		{
-			FMicron& Micron = Raw->Microns[MicronID];
+			FMicron& Micron = Raw->Microns.List[MicronID];
 			if (Micron.Profile.List) { delete[] Micron.Profile.List; }
 			if (Micron.Family.List) { delete[] Micron.Family.List; }
 			if (Micron.Trace.Sequence)
@@ -34,14 +34,14 @@ CResult::~CResult()
 				delete[] Micron.Trace.Sequence;
 			}
 		}
-		delete[] Raw->Microns;
+		delete[] Raw->Microns.List;
 	}
 
-	if (Raw->Compounds)
+	if (Raw->Compounds.List)
 	{
-		for (compound_id CompoundID = MicronML_First; CompoundID < Raw->Size; ++CompoundID)
+		for (compound_id CompoundID = MicronML_First; CompoundID < Raw->Compounds.Size; ++CompoundID)
 		{
-			FCompound& Compound = Raw->Compounds[CompoundID];
+			FCompound& Compound = Raw->Compounds.List[CompoundID];
 			if (Compound.Profile.List) { delete[] Compound.Profile.List; }
 			if (Compound.Family.List) { delete[] Compound.Family.List; }
 			if (Compound.Trace.Sequence)
@@ -54,7 +54,7 @@ CResult::~CResult()
 				delete[] Compound.Trace.Sequence;
 			}
 		}
-		delete[] Raw->Compounds;
+		delete[] Raw->Compounds.List;
 	}
 
 	delete Raw;
@@ -117,11 +117,11 @@ FMicron* CResult::GetMicron(micron_id MicronID, FCursor* CursorPointer)
 	FMicron* Micron;
 
 	if (ID == MicronML_None) { MicronML_Throw_Warning(EExceptionCode::NoneResult); return nullptr; }
-	if (MicronID >= Raw->Size) { MicronML_Throw_Error(EExceptionCode::InvalidMicronID); return nullptr; }
+	if (MicronID >= Raw->Microns.Size) { MicronML_Throw_Error(EExceptionCode::InvalidMicronID); return nullptr; }
 
 	Cursor.Type = ECursor::Micron;
 	Cursor.Micron = { ID, MicronID };
-	Micron = &Raw->Microns[MicronID];
+	Micron = &Raw->Microns.List[MicronID];
 	OnMicronEvent->Signal(Micron, Cursor);
 	if (CursorPointer) { *CursorPointer = Cursor; }
 	return Micron;
@@ -133,11 +133,11 @@ FCompound* CResult::GetCompound(compound_id CompoundID, FCursor* CursorPointer)
 	FCompound* Compound;
 
 	if (ID == MicronML_None) { MicronML_Throw_Warning(EExceptionCode::NoneResult); return nullptr; }
-	if (CompoundID >= Raw->Size) { MicronML_Throw_Error(EExceptionCode::InvalidCompoundID); return nullptr; }
+	if (CompoundID >= Raw->Compounds.Size) { MicronML_Throw_Error(EExceptionCode::InvalidCompoundID); return nullptr; }
 
 	Cursor.Type = ECursor::Compound;
 	Cursor.Compound = { ID, CompoundID };
-	Compound = &Raw->Compounds[CompoundID];
+	Compound = &Raw->Compounds.List[CompoundID];
 	OnCompoundEvent->Signal(Compound, Cursor);
 	if (CursorPointer) { *CursorPointer = Cursor; }
 	return Compound;
