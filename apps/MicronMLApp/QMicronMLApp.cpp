@@ -4,8 +4,8 @@
 
 #define MicronMLApp_Title tr("MicronML")
 #define MicronMLApp_ImportDataTitle tr("Import Data")
-#define MicronMLApp_ImportResultTitle tr("Import Data")
-#define MicronMLApp_ImportProcedureTitle tr("Import Data")
+#define MicronMLApp_ImportResultTitle tr("Import Result")
+#define MicronMLApp_ImportProcedureTitle tr("Import Procedure")
 #define MicronMLApp_FileTitle tr("File")
 #define MicronMLApp_SelectTitle tr("Select")
 #define MicronMLApp_ProjectTitle tr("Project")
