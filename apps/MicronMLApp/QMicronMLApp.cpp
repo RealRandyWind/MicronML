@@ -28,10 +28,8 @@ QMicronMLApp::QMicronMLApp() :
 	Canvas(new QLabel(this)),
 	ImageReader(new QImageReader())
 {
-	resize(MicronMLApp_WindowSize);
-	setWindowTitle(MicronMLApp_Title);
-	setCentralWidget(Canvas);
 	
+	CreateMain();
 	CreateActions();
 	CreateMenus();
 
@@ -43,6 +41,14 @@ QMicronMLApp::QMicronMLApp() :
 QMicronMLApp::~QMicronMLApp()
 {
 	delete ImageReader;
+}
+
+void QMicronMLApp::CreateMain()
+{
+	resize(MicronMLApp_WindowSize);
+	setWindowTitle(MicronMLApp_Title);
+	setCentralWidget(Canvas);
+	MainStatusBar = statusBar();
 }
 
 void QMicronMLApp::CreateActions()
@@ -193,7 +199,6 @@ void QMicronMLApp::OnDataImport(const FDataParameters Parameters, FData* Data, d
 		Sample.Time = static_cast<real_t>(SampleID);
 		Sample.Origin = { MicronML_ZeroF, MicronML_ZeroF, MicronML_ZeroF };
 	}
-
 	API->AddListener(FOnSampleEvent, QMicronMLApp, this, OnSample, ID);
 };
 

@@ -24,13 +24,15 @@ namespace MicronMLApp
 		QImageReader* ImageReader;
 
 		QLabel* Canvas;
+		QStatusBar* MainStatusBar;
 
-		/* Main Menu's */
+		/* Menus */
 		QMenu* FileMenu;
 		QMenu* ProjectMenu;
 		QMenu* SelectMenu;
 		QMenu* ContextMenu;
 
+		/* Actions */
 		QActionGroup* ProcedureActionGroup;
 		QActionGroup* DataActionGroup;
 		QActionGroup* ResultActionGroup;
@@ -47,6 +49,7 @@ namespace MicronMLApp
 		QAction* ValidateProcedureAction;
 		QAction* ExtractMicronsAction;
 
+		void CreateMain();
 		void CreateActions();
 		void CreateMenus();
 
