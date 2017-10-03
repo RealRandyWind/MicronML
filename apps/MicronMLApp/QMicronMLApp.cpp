@@ -16,9 +16,10 @@
 #define MicronMLApp_ValidateProcedureTitle tr("Validate Procedure")
 #define MicronMLApp_WindowSize QSize(1080, 720)
 #define MicronMLApp_ImageFormat QImage::Format_RGBA8888
-#define MicronMLApp_Disabled true
+#define MicronMLApp_Disabled false
+#define MicronMLApp_Enable true
 #define MicronMLApp_Visible true
-#define MicronMLApp_NotVisible false
+#define MicronMLApp_Invisible false
 
 using namespace MicronMLApp;
 
@@ -80,16 +81,15 @@ void QMicronMLApp::CreateActions()
 
 	DataActionGroup = new QActionGroup(this);
 	DataActionGroup->addAction(LabelDataAction);
-	DataActionGroup->setDisabled(MicronMLApp_Disabled);
+
+	ResultActionGroup = new QActionGroup(this);
 
 	ProcedureActionGroup = new QActionGroup(this);
 	ProcedureActionGroup->addAction(TrainProcedureAction);
 	ProcedureActionGroup->addAction(ValidateProcedureAction);
-	ProcedureActionGroup->setDisabled(MicronMLApp_Disabled);
 
 	DataProcedureActionGroup = new QActionGroup(this);
 	DataProcedureActionGroup->addAction(ExtractMicronsAction);
-	DataProcedureActionGroup->setDisabled(MicronMLApp_Disabled);
 }
 
 void QMicronMLApp::CreateMenus()
@@ -102,10 +102,19 @@ void QMicronMLApp::CreateMenus()
 	FileMenu->addAction(ExitAction);
 
 	ProjectMenu = menuBar()->addMenu(MicronMLApp_ProjectTitle);
-	ProjectMenu->setDisabled(MicronMLApp_Disabled);
+	ProjectMenu->setEnabled(MicronMLApp_Disabled);
 
 	SelectMenu = menuBar()->addMenu(MicronMLApp_SelectTitle);
-	SelectMenu->setDisabled(MicronMLApp_Disabled);
+	SelectMenu->addActions(DataActionGroup->actions());
+	SelectMenu->addActions(ResultActionGroup->actions());
+	SelectMenu->addActions(ProcedureActionGroup->actions());
+	SelectMenu->addActions(DataProcedureActionGroup->actions());
+
+	ContextMenu = new QMenu(this);
+	ContextMenu->addActions(DataActionGroup->actions());
+	ContextMenu->addActions(ResultActionGroup->actions());
+	ContextMenu->addActions(ProcedureActionGroup->actions());
+	ContextMenu->addActions(DataProcedureActionGroup->actions());
 }
 
 void QMicronMLApp::ImportData()
@@ -216,3 +225,15 @@ inline raw_t* QMicronMLApp::CopyDataPoints(QImage& Image)
 	for (size_t Index = 0; Index < Bytes; ++Index) { To[Index] = From[Index]; }
 	return To;
 }
+
+#ifndef QT_NO_CONTEXTMENU
+void QMicronMLApp::contextMenuEvent(QContextMenuEvent *Event)
+{
+	/* Check context anable and show actions in menue */
+	/*
+	ProcedureActionGroup->setEnabled(MicronMLApp_Enable);
+	ProcedureActionGroup->setVisible(MicronMLApp_Visible);
+	*/
+	ContextMenu->exec(Event->globalPos());
+}
+#endif

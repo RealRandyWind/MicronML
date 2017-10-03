@@ -29,9 +29,11 @@ namespace MicronMLApp
 		QMenu* FileMenu;
 		QMenu* ProjectMenu;
 		QMenu* SelectMenu;
+		QMenu* ContextMenu;
 
 		QActionGroup* ProcedureActionGroup;
 		QActionGroup* DataActionGroup;
+		QActionGroup* ResultActionGroup;
 		QActionGroup* DataProcedureActionGroup;
 
 		QAction* ExitAction;
@@ -49,6 +51,11 @@ namespace MicronMLApp
 		void CreateMenus();
 
 		inline raw_t* CopyDataPoints(QImage& Image);
+
+	protected:
+#ifndef QT_NO_CONTEXTMENU
+		void contextMenuEvent(QContextMenuEvent *Event) override;
+#endif
 
 	public slots:
 		void ImportData();
