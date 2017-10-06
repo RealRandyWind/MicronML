@@ -31,5 +31,6 @@ namespace MicronML
 			size_t Size;
 			real_t* Values;
 		} FCharge;
+
 	}
 }

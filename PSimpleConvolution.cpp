@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <math.h>
 #include "Result.h"
 #include "Data.h"
 #include "PSimpleConvolution.h"
@@ -97,6 +98,7 @@ void CPSimpleConvolution::Apply(FDomain Domain, const FSample Sample, FFeature* 
 	FDataPoint Point;
 	size_t LayerID, NeuronID, ChargeID, ValueID;
 	bool_t bActive;
+	real_t Charge;
 
 	if (!Feature || !NetworkPointer) { return;  }
 
@@ -130,12 +132,14 @@ void CPSimpleConvolution::Apply(FDomain Domain, const FSample Sample, FFeature* 
 		Output.Size = Layer.Size;
 		for (NeuronID = MicronML_First; NeuronID < Layer.Size; NeuronID++)
 		{
+			/* Compute activation given previous layer activations */
 			Neuron = Layer.Neurons[NeuronID];
-			Output.Values[NeuronID] = Layer.Bias;
+			Charge = -Layer.Bias;
 			for (ChargeID = MicronML_First; ChargeID < Input.Size; ChargeID++)
 			{
-				Output.Values[NeuronID] += Input.Values[ChargeID] * Neuron.Weights[ChargeID];
+				Charge += Input.Values[ChargeID] * Neuron.Weights[ChargeID];
 			}
+			Output.Values[NeuronID] = Activation(Charge);
 		}
 	}
 
@@ -168,4 +172,18 @@ void CPSimpleConvolution::Measure(const FFeature Label, const FSample Sample, FP
 
 	/* Initialization */
 	Network = (FNetwork*)NetworkPointer;
+}
+
+inline real_t CPSimpleConvolution::Activation(real_t Charge)
+{
+	return MicronML_OneF / (MicronML_OneF + exp(Charge));
+}
+
+inline real_t CPSimpleConvolution::DeltaActivation(real_t Charge)
+{
+	real_t ExpCharge, Dominator;
+
+	ExpCharge = exp(Charge);
+	Dominator = (ExpCharge + MicronML_OneF) * (ExpCharge + MicronML_OneF);
+	return ExpCharge * (MicronML_OneF / Dominator);
 }
