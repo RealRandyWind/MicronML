@@ -23,6 +23,7 @@
 #define MicronML_Throw_Unknown() MicronML_Throw(MicronML::EExceptionType::Unknown, MicronML::EExceptionCode::Unknown, nullptr)
 #define MicronML_Throw_NotSupported() MicronML_Throw_Warning(MicronML::EExceptionCode::FunctionNotSuppored)
 #define MicronML_Throw_Deprecated() MicronML_Throw_Warning(MicronML::EExceptionCode::FunctionDeprecated)
+#define MicornML_Throw_Beta() MicronML_Throw_Warning(MicronML::EExceptionCode::FunctionBeta)
 
 namespace MicronML
 {

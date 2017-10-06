@@ -35,6 +35,9 @@ namespace MicronML
 		NullProcedureIDPointer,
 		NullResultIDPointer,
 		NullTrace,
+		NullNetwork,
+		NullFeature,
+		NullPerformance,
 
 		NoneData = MicronML_NoneCode,
 		NoneResult,
@@ -73,6 +76,10 @@ namespace MicronML
 
 		FunctionNotSuppored = MicronML_SpecialCode,
 		FunctionDeprecated,
+		FunctionBeta,
+
+		EmptySample = MicronML_OtherCode,
+
 		_EnumSize
 	};
 

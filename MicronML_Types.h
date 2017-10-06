@@ -78,4 +78,5 @@ namespace MicronML
 		RecurrentNeuralNetwork,
 		_EnumSize
 	};
+
 }
