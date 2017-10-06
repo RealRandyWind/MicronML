@@ -16,6 +16,11 @@ namespace MicronML
 		static void Drop(procedure_id ProcedureID);
 
 		virtual void Active();
+		/*
+		virtual void ExtractCompounds(FExtractCompoundParameters Parameters, result_id* ResultIDPointer) = 0;
+		virtual void ClassifyCompounds(FClassifyCompoundParameters Parameters, result_id* ResultIDPointer) = 0;
+		virtual void TraceCompounds(FTraceCompoundParameters Parameters, result_id* ResultIDPointer) = 0;
+		*/
 		virtual void ExtractMicrons(FExtractMicronParameters Parameters, result_id* ResultIDPointer) = 0;
 		virtual void ClassifyMicrons(FClassifyMicronParameters Parameters, result_id* ResultIDPointer) = 0;
 		virtual void TraceMicrons(FTraceMicronParameters Parameters, result_id* ResultIDPointer) = 0;
