@@ -43,7 +43,7 @@ namespace MicronML
 		NoneResult,
 		NoneProcedure,
 
-		FaildOpenFile = MicronML_FaildCode,
+		FaildToOpenFile = MicronML_FaildCode,
 		FaildToImportFile,
 		FaildToExportFile,
 		FaildToAllocateSamples,
@@ -56,8 +56,8 @@ namespace MicronML
 		FaildToAllocateCursors,
 		FaildToAllocateFeatures,
 		FaildToAllocateCompounds,
-		FaildTermination,
-		FaildInitialization,
+		FaildToTermination,
+		FaildToInitialization,
 		FaildToReadSampleSize,
 
 		InvalidSampleID = MicronML_InvalidCode,
@@ -79,6 +79,11 @@ namespace MicronML
 		FunctionBeta,
 
 		EmptySample = MicronML_OtherCode,
+		MismatchFeatureSize,
+		MismatchSampleSize,
+		MismatchDomainSize,
+		EmptySelection,
+		EmptyDomain,
 
 		_EnumSize
 	};
