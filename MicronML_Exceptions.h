@@ -69,6 +69,7 @@ namespace MicronML
 		InvalidContactID,
 		InvalidClassID,
 		InvalidCompoundID,
+		InvalidCursorType,
 
 		DataImport = MicronML_ActionCode,
 		ResultImport,
@@ -77,6 +78,7 @@ namespace MicronML
 		FunctionNotSuppored = MicronML_SpecialCode,
 		FunctionDeprecated,
 		FunctionBeta,
+		FunctionIngnorant,
 
 		EmptySample = MicronML_OtherCode,
 		MismatchFeatureSize,
