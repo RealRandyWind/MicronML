@@ -188,6 +188,7 @@
     <ClInclude Include="Data.h" />
     <ClInclude Include="MicronML_Definitions.h" />
     <ClInclude Include="MicronML_Events.h" />
+    <ClInclude Include="MicronML_Math.h" />
     <ClInclude Include="MicronML_Types.h" />
     <ClInclude Include="PArticleSolution.h" />
     <ClInclude Include="PCurrentFix.h" />

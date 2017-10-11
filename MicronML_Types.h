@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdint.h>
-#include <string>
 
 #define MicronML_Macro_Expand(Args) Args
 #define MicronML_Macro_Concat(Left, Right) Left ## Right
@@ -25,6 +24,7 @@
 #define MicronML_Unknown 0
 #define MicronML_One 1
 #define MicronML_First 0
+#define MicronML_Second 0
 #define MicronML_Zero 0
 #define MicronML_NegOne -1
 #define MicronML_OneF 1.0f
@@ -49,8 +49,13 @@ namespace MicronML
 
 	typedef float real_t;
 	typedef bool bool_t;
+	typedef int int_t;
+	typedef size_t size_t;
 	typedef char* string_t;
 	typedef void* pointer_t;
+	/*
+	typedef uint64_t uuid_t;
+	*/
 
 	typedef size_t data_id;
 	typedef size_t procedure_id;
