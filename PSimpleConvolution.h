@@ -22,10 +22,11 @@ namespace MicronML
 		pointer_t TraceNetworkPointer;
 
 		void Apply(FDomain Domain, const FSample Sample, FFeature* Feature, pointer_t NetworkPointer);
-		void Update(const FFeature Label, const FSample Sample, pointer_t NetworkPointer);
-		void Measure(const FFeature Label, const FSample Sample, FPerformance* Performance, pointer_t NetworkPointer);
+		void Update(const FLabel Label, const FSample Sample, pointer_t NetworkPointer);
+		void Measure(const FLabel Label, const FSample Sample, FPerformance* Performance, pointer_t NetworkPointer);
 		
 		inline real_t Activation(real_t Charge);
 		inline real_t DeltaActivation(real_t Charge);
+		inline FDomain Neighbourhoud(size_t PointID);
 	};
 }

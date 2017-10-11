@@ -21,7 +21,10 @@ void CPSimpleConvolution::ExtractMicrons(FExtractMicronParameters Parameters, re
 {
 	CResult* Result;
 	CData* Data;
-	if (!ResultIDPointer) { return; }
+
+	/* Exceptions Preconditional */
+	if (!ResultIDPointer) { MicronML_Throw_Warning(EExceptionCode::NullResultIDPointer); return; }
+	
 	Active();
 	Data = CData::Use(Parameters.DataID);
 	/* TODO prepair result data, and data then run it */
@@ -32,7 +35,10 @@ void CPSimpleConvolution::ClassifyMicrons(FClassifyMicronParameters Parameters, 
 {
 	CResult* Result;
 	CData* Data;
-	if (!ResultIDPointer) { return; }
+
+	/* Exceptions Preconditional */
+	if (!ResultIDPointer) { MicronML_Throw_Warning(EExceptionCode::NullResultIDPointer); return; }
+	
 	Active();
 	Data = CData::Use(Parameters.DataID);
 	/* TODO prepair result data, and data then run it */
@@ -43,47 +49,85 @@ void CPSimpleConvolution::TraceMicrons(FTraceMicronParameters Parameters, result
 {
 	CResult* Result;
 	CData* Data;
-	if (!ResultIDPointer) { return; }
+
+	/* Exceptions Preconditional */
+	if (!ResultIDPointer) { MicronML_Throw_Warning(EExceptionCode::NullResultIDPointer); return; }
+	
 	Active();
 	Data = CData::Use(Parameters.DataID);
 	/* TODO prepair result data, and data then run it */
 	*ResultIDPointer = Result->GetID();
 }
 
-void CPSimpleConvolution::Train(FTrainParameters Parameters, const FSelection Samples)
+void CPSimpleConvolution::Train(FTrainParameters Parameters, const FSelection Selection)
 {
 	CResult* Result;
 	CData* Data;
 	FFeature Label;
 	sample_id SampleID;
-	if (!Samples.Size) { return; }
+
+	/* Exceptions Preconditional */
+	if (!Selection.Size) { MicronML_Throw_Warning(EExceptionCode::EmptySelection); return; }
+	
 	Active();
 	/* TODO train network */
-	for (SampleID = MicronML_First; SampleID < Samples.Size; SampleID++)
+	for (SampleID = MicronML_First; SampleID < Selection.Size; SampleID++)
 	{
 		/* TODO get data and results, transform results into feature label */
 		/* TODO Update(Label, RawData); */
 	}
 }
 
-void CPSimpleConvolution::Validate(FValidateParameters Parameters, const FSelection Samples, FPerformance* Performance)
+void CPSimpleConvolution::Validate(FValidateParameters Parameters, const FSelection Selection, FPerformance* Performance)
 {
 	CResult* Result;
 	CData* Data;
-	FFeature Label;
+	FResult* Raw;
+	FSample* Sample;
+	FCursor Cursor, SampleCursor;
+	FMicron Micron;
+	FShape Shape;
+	FLabel Label;
 	sample_id SampleID;
-	if (!Performance || !Samples.Size) { return; }
+	micron_id MicronID;
+	shape_id ShapeID;
+	size_t CursorID;
+
+	MicronML_Throw_Ignorant();
+
+	/* Exceptions Preconditional */
+	if (!Performance) { MicronML_Throw_Warning(EExceptionCode::NullPerformance); return; }
+	if (!Selection.Size) { MicronML_Throw_Warning(EExceptionCode::EmptySelection); return; }
+
 	Active();
 	/* TODO validate network */
-	for (SampleID = MicronML_First; SampleID < Samples.Size; SampleID++)
+	for (CursorID = MicronML_First; CursorID < Selection.Size; CursorID++)
 	{
-		/* TODO get data and results, transform results into feature label */
-		/* TODO Measure(Label, RawData, Performance, ); */
+		Cursor = Selection.Cursors[CursorID];
+		if (Cursor.Type != ECursor::Result) { MicronML_Throw_Warning(EExceptionCode::InvalidCursorType); continue; }
+		Result = CResult::Use(Cursor.ResultID);
+		if (!Result) { MicronML_Throw_Warning(EExceptionCode::NullResult); return; }
+		Raw = Result->GetRaw();
+		for (MicronID = MicronML_First; MicronID < Raw->Microns.Size; ++MicronID)
+		{
+			Micron = Raw->Microns.List[MicronID];
+			for (ShapeID = MicronML_First; ShapeID < Micron.Trace.Size; ++ShapeID)
+			{
+				Shape = Micron.Trace.List[ShapeID];
+				Data = CData::Use(Shape.Cursor.Sample.DataID);
+				if (!Data) { MicronML_Throw_Warning(EExceptionCode::NullData); return; }
+				Sample = Data->GetSample(SampleCursor.Sample.ID, nullptr);
+
+				Measure(Label, *Sample, Performance, ExtractNetworkPointer);
+			}
+		}
 	}
 }
 
 void CPSimpleConvolution::Optimize(FOptimizeParameters Parameters)
 {
+	MicronML_Throw_NotSupported();
+
 	Active();
 	/* TODO optimize network(s) */
 }
@@ -100,7 +144,9 @@ void CPSimpleConvolution::Apply(FDomain Domain, const FSample Sample, FFeature* 
 	bool_t bActive;
 	real_t Charge;
 
-	if (!Feature || !NetworkPointer) { return;  }
+	/* Exceptions Preconditional */
+	if (!NetworkPointer) { MicronML_Throw_Warning(EExceptionCode::NullNetwork); return; }
+	if (!Feature) { MicronML_Throw_Warning(EExceptionCode::NullFeature);  return; }
 
 	/* Initialization */
 	Network = (FNetwork*) NetworkPointer;
@@ -154,28 +200,64 @@ void CPSimpleConvolution::Apply(FDomain Domain, const FSample Sample, FFeature* 
 	delete[] Output.Values;
 }
 
-void CPSimpleConvolution::Update(const FFeature Label, const FSample Sample, pointer_t NetworkPointer)
+void CPSimpleConvolution::Update(const FLabel Label, const FSample Sample, pointer_t NetworkPointer)
 {
 	FNetwork* Network;
-	FFeature Feature;
-	if (!NetworkPointer) { return; }
+	FFeature Feature, Target;
+	real_t Delta, Error, Difference, Dominator;
+	size_t PointId, ValueID;
+
+	/* Exceptions Preconditional */
+	if (!NetworkPointer) { MicronML_Throw_Warning(EExceptionCode::NullNetwork); return; }
+
+	
 
 	/* Initialization */
-	Network = (FNetwork*)NetworkPointer;
+	Network = (FNetwork*) NetworkPointer;
+
 }
 
-void CPSimpleConvolution::Measure(const FFeature Label, const FSample Sample, FPerformance* Performance, pointer_t NetworkPointer)
+void CPSimpleConvolution::Measure(const FLabel Label, const FSample Sample, FPerformance* Performance, pointer_t NetworkPointer)
 {
 	FNetwork* Network;
-	FFeature Feature;
-	if (!Performance || !NetworkPointer) { return; }
+	FFeature Feature, Target;
+	real_t Error, Difference, Dominator;
+	size_t PointID, ValueID;
+
+	/* Exceptions Preconditional */
+	if (!NetworkPointer) { MicronML_Throw_Warning(EExceptionCode::NullNetwork); return; }
+	if (!Sample.Size) { MicronML_Throw_Warning(EExceptionCode::EmptySample); return; }
 
 	/* Initialization */
-	Network = (FNetwork*)NetworkPointer;
+	Network = (FNetwork*) NetworkPointer;
+	Error = MicronML_ZeroF;
+	Dominator = MicronML_OneF / Sample.Size;
+
+	/* Compute error contribution of current sample */
+	for (PointID = MicronML_First; PointID < Sample.Size; ++PointID)
+	{
+		/* Forward propagation of the sample */
+		Apply(Neighbourhoud(PointID), Sample, &Feature, NetworkPointer);
+
+		/* compute feature error compared to target feature */
+		Target = Label.Targets[PointID];
+		for (ValueID = MicronML_First; ValueID < Feature.Size; ++ValueID)
+		{
+			Difference = Target.Sequence[ValueID] - Feature.Sequence[ValueID];
+			Error += Difference * Difference;
+		}
+	}
+	Error *= Dominator;
+
+	/* Update error as moving avrage, assuming N is incremented */
+	Performance->Error += (Error - Performance->Error) / Performance->N;
 }
 
 inline real_t CPSimpleConvolution::Activation(real_t Charge)
 {
+	/*
+	return (Charge < MicronML_ZeroF ? MicronML_ZeroF : (Charge > MicronML_OneF ? MicronML_OneF : Charge));
+	*/
 	return MicronML_OneF / (MicronML_OneF + exp(Charge));
 }
 
@@ -186,4 +268,12 @@ inline real_t CPSimpleConvolution::DeltaActivation(real_t Charge)
 	ExpCharge = exp(Charge);
 	Dominator = (ExpCharge + MicronML_OneF) * (ExpCharge + MicronML_OneF);
 	return ExpCharge * (MicronML_OneF / Dominator);
+}
+
+inline FDomain CPSimpleConvolution::Neighbourhoud(size_t PointID)
+{
+	FDomain Domain;
+	
+	Domain = { MicronML_Zero, nullptr };
+	return Domain;
 }

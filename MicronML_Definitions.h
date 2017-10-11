@@ -25,12 +25,6 @@ namespace MicronML
 	enum class EShape : enum_t
 	{
 		Unknown = MicronML_Unknown,
-		/*
-		Cloud,
-		Path,
-		Mesh,
-		Skeleton,
-		*/
 		Micron,
 		Compound,
 		_EnumSize
@@ -99,6 +93,12 @@ namespace MicronML
 		size_t Size;
 		real_t* Sequence;
 	} FFeature;
+
+	typedef struct FLabel
+	{
+		size_t Size;
+		FFeature* Targets;
+	} FLabel;
 
 	typedef struct FDomain
 	{
