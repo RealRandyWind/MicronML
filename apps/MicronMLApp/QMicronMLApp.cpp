@@ -26,7 +26,8 @@ using namespace MicronMLApp;
 QMicronMLApp::QMicronMLApp() :
 	API(CMicronML::GetInstance()),
 	Canvas(new QLabel(this)),
-	ImageReader(new QImageReader())
+	ImageReader(new QImageReader()),
+	Painter(new QPainter(this))
 {
 	
 	CreateMain();
@@ -129,7 +130,7 @@ void QMicronMLApp::ImportData()
 	data_id DataID = MicronML_None;
 	QString FileName = QFileDialog::getOpenFileName(this, MicronMLApp_ImportDataTitle, QDir::currentPath());
 	if (FileName.isEmpty()) { MicronML_Throw_Warning(EExceptionCode::NullFile); return; }
-	Parameters.File = rt(FileName);
+	Parameters.File = FromQt(FileName);
 	API->ImportData(Parameters, &DataID);
 }
 
@@ -139,7 +140,7 @@ void QMicronMLApp::ImportResult()
 	result_id ResultID = MicronML_None;
 	QString FileName = QFileDialog::getOpenFileName(this, MicronMLApp_ImportResultTitle, QDir::currentPath());
 	if (FileName.isEmpty()) { MicronML_Throw_Warning(EExceptionCode::NullFile); return; }
-	Parameters.File = rt(FileName);
+	Parameters.File = FromQt(FileName);
 	API->ImportResult(Parameters, &ResultID);
 }
 
@@ -149,7 +150,7 @@ void QMicronMLApp::ImportProcedure()
 	procedure_id ProcedureID = MicronML_None;
 	QString FileName = QFileDialog::getOpenFileName(this, MicronMLApp_ImportProcedureTitle, QDir::currentPath());
 	if (FileName.isEmpty()) { MicronML_Throw_Warning(EExceptionCode::NullFile); return; }
-	Parameters.File = rt(FileName);
+	Parameters.File = FromQt(FileName);
 	API->ImportProcedure(Parameters, &ProcedureID);
 }
 
@@ -180,6 +181,9 @@ void QMicronMLApp::ExtractMicrons()
 void QMicronMLApp::OnDataImport(const FDataParameters Parameters, FData* Data, data_id ID)
 {
 	if (!Data) { MicronML_Throw_Warning(EExceptionCode::NullData); }
+
+	MicronML_Throw_Ignorant();
+
 	ImageReader->setFileName(Parameters.File);
 	/* TODO use typdef uint64 raw_t and Qrgba64*/
 	Data->Size = (ImageReader->imageCount() ? ImageReader->imageCount() : MicronML_One);
@@ -200,25 +204,31 @@ void QMicronMLApp::OnDataImport(const FDataParameters Parameters, FData* Data, d
 		Sample.Origin = { MicronML_ZeroF, MicronML_ZeroF, MicronML_ZeroF };
 	}
 	API->AddListener(FOnSampleEvent, QMicronMLApp, this, OnSample, ID);
-};
+}
 
 void QMicronMLApp::OnDataImportDone(const FDataParameters Parameters, const FData Data, data_id ID)
 {
 	MicronML_Throw_Success(EExceptionCode::DataImport);
 	/* Show first Sample, this will fire OnSample Event */
 	API->Sample({ECursor::Sample, ID, MicronML_First });
-};
+}
 
 void QMicronMLApp::OnSample(FSample* Sample, FCursor Cursor)
 {
 	QImage Image(Sample->Pointer, static_cast<int>(Sample->Dimensions.Width), static_cast<int>(Sample->Dimensions.Height), MicronMLApp_ImageFormat);
 	Canvas->setPixmap(QPixmap::fromImage(Image));
 	resize(Image.size());
-};
+}
+
+void QMicronMLApp::OnCompound(FCompound* Compound, FCursor Cursor)
+{
+	/* Redraw if data changed, and highlight activated */
+	MicronML_Throw_NotSupported();
+}
 
 void QMicronMLApp::OnMicron(FMicron* Micron, FCursor Cursor)
 {
-	/* Redraw if data changed, and highlight activated micron */
+	/* Redraw if data changed, and highlight activated */
 	MicronML_Throw_NotSupported();
 }
 
@@ -229,6 +239,30 @@ inline raw_t* QMicronMLApp::CopyDataPoints(QImage& Image)
 	raw_t* From = Image.bits();
 	for (size_t Index = 0; Index < Bytes; ++Index) { To[Index] = From[Index]; }
 	return To;
+}
+
+void QMicronMLApp::DisplayShape(const FShape Shape, QColor Fill, QColor Stroke)
+{
+	QPainterPath Path;
+	size_t PointID;
+
+	MicronML_Throw_Ignorant();
+	Painter->setRenderHint(QPainter::Antialiasing);
+	Painter->setBrush(QBrush(Fill));
+	Painter->setPen(QPen(Stroke));
+	Path.moveTo(ToQt(Shape.Sequence[MicronML_First]));
+	for (PointID = MicronML_Second; PointID < Shape.Size; ++PointID)
+	{
+		Path.lineTo(ToQt(Shape.Sequence[PointID]));
+	}
+	Painter->drawPath(Path);
+	Painter->restore();
+}
+
+void QMicronMLApp::DisplaySample(const FSample Sample)
+{
+	/* Draw smaple to window */
+	MicronML_Throw_NotSupported();
 }
 
 #ifndef QT_NO_CONTEXTMENU

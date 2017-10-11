@@ -18,10 +18,15 @@ namespace MicronMLApp
 		void OnDataImportDone(const FDataParameters Parameters, const FData Data, data_id ID);
 		void OnSample(FSample* Sample, FCursor Cursor);
 		void OnMicron(FMicron* Micron, FCursor Cursor);
+		void OnCompound(FCompound* Compound, FCursor Cursor);
+
+		void DisplaySample(const FSample Sample);
+		void DisplayShape(const FShape Shape, QColor Fill, QColor Stroke);
 
 	private:
 		CMicronML* API;
 		QImageReader* ImageReader;
+		QPainter* Painter;
 
 		QLabel* Canvas;
 		QStatusBar* MainStatusBar;
