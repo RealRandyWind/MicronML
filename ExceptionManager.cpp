@@ -40,6 +40,7 @@ void CExceptionManager::Catch(const FException Exception)
 		Exception.File, Exception.Line,
 		Exception.FunctionSignature, __FUNCDNAME__
 	);
+
 	if (Exception.Type == EExceptionType::Error)
 	{
 		exit(MicronML_Exception_ExitCode);
